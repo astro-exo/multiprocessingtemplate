@@ -11,6 +11,7 @@
   --rule:#D8DBD2; --rule-strong:#B4B9B0;
   --accent:#1D4E6B; --accent-soft:#E4EDF2;
   --s-fixed:#1f6fb2; --s-var:#d1601f;
+  --s-mob:#1f6fb2; --s-prod:#d1601f; --s-mat:#1a8f66;
   --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
   --tint-good:rgba(12,163,12,.13); --tint-warn:rgba(250,178,25,.20); --tint-crit:rgba(208,59,59,.13);
   --shadow:0 1px 2px rgba(20,24,27,.05);
@@ -23,6 +24,7 @@
     --rule:#2C3237; --rule-strong:#414950;
     --accent:#7FB8D8; --accent-soft:#16303D;
     --s-fixed:#3f8ecf; --s-var:#dd7433;
+    --s-mob:#3f8ecf; --s-prod:#dd7433; --s-mat:#2aa87a;
     --tint-good:rgba(12,163,12,.20); --tint-warn:rgba(250,178,25,.17); --tint-crit:rgba(208,59,59,.20);
     --shadow:0 1px 2px rgba(0,0,0,.35);
   }
@@ -34,6 +36,7 @@
   --rule:#2C3237; --rule-strong:#414950;
   --accent:#7FB8D8; --accent-soft:#16303D;
   --s-fixed:#3f8ecf; --s-var:#dd7433;
+  --s-mob:#3f8ecf; --s-prod:#dd7433; --s-mat:#2aa87a;
   --tint-good:rgba(12,163,12,.20); --tint-warn:rgba(250,178,25,.17); --tint-crit:rgba(208,59,59,.20);
   --shadow:0 1px 2px rgba(0,0,0,.35);
 }
@@ -156,6 +159,11 @@ thead th{
 }
 tbody tr:last-child td{border-bottom:none}
 tr.sub td{color:var(--muted)}
+table.tight th,table.tight td{padding:6px 9px; font-size:12px}
+table.tight td:first-child,table.tight th:first-child{min-width:0}
+td.prose{white-space:normal; min-width:230px; max-width:330px; text-align:left;
+  color:var(--muted); font-size:12px; line-height:1.45; vertical-align:middle;
+  padding:7px 14px}
 tr.sub td:first-child{padding-left:30px}
 tr.tot td{font-weight:600; border-top:1px solid var(--rule-strong); background:var(--surface-2)}
 tr.key td{font-weight:600; background:var(--accent-soft)}
@@ -638,6 +646,221 @@ footer li{margin-bottom:7px}
   </div>
 </section>
 
+<section>
+  <div class="sheet">08</div>
+  <div class="body">
+    <h2>Economies of scale in construction</h2>
+    <p class="lede">The scenarios above price yard construction as a flat rate per square foot,
+    which hides where the money actually goes. Splitting the section into how each dollar
+    <em>behaves</em> shows why volume buys less than people expect &mdash; and what does work
+    instead.</p>
+
+    <h3>Where the money goes</h3>
+    <figure class="plate">
+      <figcaption><b>Cost behaviour</b><span>Base heavy-duty section, $ per SF of paved yard</span></figcaption>
+      <div class="chart-body"><div id="c3"></div></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--s-mob)"></i>Mobilisation &mdash; fixed per contract</span>
+        <span><i class="sw" style="background:var(--s-prod)"></i>Production &mdash; labour &amp; equipment hours</span>
+        <span><i class="sw" style="background:var(--s-mat)"></i>Material &mdash; tonnage in the ground</span>
+      </div>
+      <p class="note">Material dominates precisely the two line items that make up the bulk of the
+      section: 73% of the surface course and 62% of the aggregate base. Earthwork is the mirror
+      image &mdash; 83% labour and equipment, which is why grading responds to productivity while
+      paving does not.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Decomposition</b><span>$ per SF, and per stall at 1,450 SF</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>Cost item</th><th>Mobilise</th><th>Production</th><th>Material</th><th>Total</th><th>Material %</th></tr></thead>
+        <tbody>
+          <tr><td>Clearing, grubbing, erosion control</td><td>$0.06</td><td>$0.24</td><td>$0.05</td><td>$0.35</td><td>14%</td></tr>
+          <tr><td>Mass grading &amp; earthwork</td><td>$0.09</td><td>$1.36</td><td>$0.30</td><td>$1.75</td><td>17%</td></tr>
+          <tr><td>Subgrade prep + 12&Prime; aggregate base</td><td>$0.05</td><td>$0.86</td><td>$1.49</td><td>$2.40</td><td>62%</td></tr>
+          <tr><td>5&Prime; bituminous surface course</td><td>$0.07</td><td>$1.11</td><td>$3.17</td><td>$4.35</td><td>73%</td></tr>
+          <tr><td>Storm conveyance within yard</td><td>$0.03</td><td>$0.25</td><td>$0.20</td><td>$0.48</td><td>42%</td></tr>
+          <tr><td>Striping, wheel stops, bollards</td><td>$0.01</td><td>$0.06</td><td>$0.05</td><td>$0.12</td><td>42%</td></tr>
+          <tr class="tot"><td>$ per SF of paved yard</td><td>$0.31</td><td>$3.88</td><td>$5.26</td><td>$9.45</td><td>56%</td></tr>
+          <tr class="sub"><td>share of yard construction</td><td>3.3%</td><td>41.1%</td><td>55.7%</td><td>&ndash;</td><td>&ndash;</td></tr>
+          <tr class="key"><td>$ per stall</td><td>$450</td><td>$5,626</td><td>$7,627</td><td>$13,702</td><td>&ndash;</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Fixed mobilisation across all trades &mdash; earthwork spread, paving train,
+      milling machine, aggregate placement, striping crew, survey, testing &mdash; totals $97,092.
+      That is the only genuinely fixed piece of the paving bill, and at 216 stalls it is already
+      down to 3.3% of the section.</p>
+    </figure>
+
+    <h3>What volume alone can do</h3>
+    <figure class="plate">
+      <figcaption><b>Scale curve</b><span>Yard construction against paved area</span></figcaption>
+      <div class="scroll"><table class="tight">
+        <thead><tr><th>Paved acres</th><th>Stalls</th><th>Bulk tons</th><th>Mobilise</th><th>Production</th><th>Material</th><th>Total $/SF</th><th>$/stall</th><th>vs base</th></tr></thead>
+        <tbody>
+          <tr><td>1.00</td><td>30</td><td>4,296</td><td>$2.23</td><td>$4.45</td><td>$5.69</td><td>$12.37</td><td>$17,937</td><td class="neg">+30.9%</td></tr>
+          <tr><td>2.00</td><td>60</td><td>8,591</td><td>$1.11</td><td>$4.24</td><td>$5.53</td><td>$10.88</td><td>$15,783</td><td class="neg">+15.2%</td></tr>
+          <tr><td>3.00</td><td>90</td><td>12,887</td><td>$0.74</td><td>$4.12</td><td>$5.37</td><td>$10.23</td><td>$14,840</td><td class="neg">+8.3%</td></tr>
+          <tr><td>5.00</td><td>150</td><td>21,478</td><td>$0.45</td><td>$3.98</td><td>$5.26</td><td>$9.69</td><td>$14,044</td><td class="neg">+2.5%</td></tr>
+          <tr class="key"><td>7.19</td><td>216</td><td>30,885</td><td>$0.31</td><td>$3.88</td><td>$5.26</td><td>$9.45</td><td>$13,702</td><td>base</td></tr>
+          <tr><td>10.00</td><td>300</td><td>42,955</td><td>$0.22</td><td>$3.79</td><td>$5.26</td><td>$9.27</td><td>$13,448</td><td class="pos">&minus;1.9%</td></tr>
+          <tr><td>15.00</td><td>451</td><td>64,433</td><td>$0.15</td><td>$3.69</td><td>$5.26</td><td>$9.09</td><td>$13,186</td><td class="pos">&minus;3.8%</td></tr>
+          <tr><td>20.00</td><td>601</td><td>85,910</td><td>$0.11</td><td>$3.61</td><td>$5.26</td><td>$8.98</td><td>$13,026</td><td class="pos">&minus;4.9%</td></tr>
+          <tr><td>30.00</td><td>901</td><td>128,865</td><td>$0.07</td><td>$3.51</td><td>$5.26</td><td>$8.85</td><td>$12,825</td><td class="pos">&minus;6.4%</td></tr>
+          <tr><td>50.00</td><td>1,502</td><td>214,775</td><td>$0.04</td><td>$3.39</td><td>$5.26</td><td>$8.69</td><td>$12,603</td><td class="pos">&minus;8.0%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Material stops improving above 20,000 tons because the base case already sits
+      in the best volume tier available &mdash; at 216 stalls you are buying 30,885 tons, and the
+      quarry and asphalt plant have nothing further to give. Everything past that point is
+      mobilisation amortisation and crew productivity, both of which flatten out.</p>
+    </figure>
+
+    <div class="callout">
+      <div class="k">The bound on volume</div>
+      <p class="big">Tripling the yard from 7 to 20 acres takes 4.9% off construction cost per stall.</p>
+      <p>Material is 56% of the section and barely tiers; production improves on a flattening
+      learning curve; mobilisation is only 3.3% to begin with. There is no version of this where
+      buying more asphalt makes asphalt cheap.</p>
+    </div>
+
+    <h3>Specification &mdash; changing what gets built</h3>
+    <figure class="plate">
+      <figcaption><b>Levers</b><span>Impact per stall against the base section</span></figcaption>
+      <div class="chart-body"><div id="c4"></div></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--s-fixed)"></i>Saving</span>
+        <span><i class="sw" style="background:var(--warn)"></i>Deliberate cost add</span>
+      </div>
+      <p class="note">One lever is worth more than all the others combined, and it is the same
+      decision that separates S1 from S2 in the scenarios above.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Lever detail</b><span>Ranked by impact</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>Lever</th><th>$ / SF</th><th>$ / stall</th><th>% of yard</th><th>What it turns on</th></tr></thead>
+        <tbody>
+          <tr><td>Hybrid surface: paved aisles, millings stalls</td><td class="pos">&minus;$2.75</td><td class="pos">&minus;$3,988</td><td class="pos">&minus;29.1%</td><td class="prose">Also shrinks the stormwater basin, since the stall area is far less impervious</td></tr>
+          <tr><td>Thinner HMA in stall areas only (5&Prime;&rarr;4&Prime;)</td><td class="pos">&minus;$0.60</td><td class="pos">&minus;$863</td><td class="pos">&minus;6.3%</td><td class="prose">Rutting risk under static trailer loads &mdash; pair with landing-gear pads</td></tr>
+          <tr><td>Balanced cut/fill &mdash; no import, no export</td><td class="pos">&minus;$0.45</td><td class="pos">&minus;$652</td><td class="pos">&minus;4.8%</td><td class="prose">Designed in from the first grading plan; not a change order</td></tr>
+          <tr><td>On-site crush &amp; reuse of demo concrete</td><td class="pos">&minus;$0.35</td><td class="pos">&minus;$507</td><td class="pos">&minus;3.7%</td><td class="prose">Only where a structure is coming out &mdash; avoids export haul and import purchase</td></tr>
+          <tr><td>25% RAP content in the HMA mix</td><td class="pos">&minus;$0.33</td><td class="pos">&minus;$474</td><td class="pos">&minus;3.5%</td><td class="prose">Confirm the nearest plant's RAP capability first</td></tr>
+          <tr><td>Geogrid &mdash; aggregate base 12&Prime;&rarr;8&Prime;</td><td class="pos">&minus;$0.31</td><td class="pos">&minus;$449</td><td class="pos">&minus;3.3%</td><td class="prose">Modest here; far larger where it avoids undercut of soft subgrade</td></tr>
+          <tr><td>Millings for the lower 6&Prime; of base</td><td class="pos">&minus;$0.20</td><td class="pos">&minus;$294</td><td class="pos">&minus;2.1%</td><td class="prose">Supply is opportunistic &mdash; depends on nearby milling jobs</td></tr>
+          <tr><td>ADD: concrete landing-gear pads, 48 SF/stall</td><td class="neg">+$0.46</td><td class="neg">+$672</td><td class="neg">+4.9%</td><td class="prose">Stops the punch-through failure that drives premature stall reconstruction</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Geogrid disappoints here only because Connecticut aggregate is cheap relative
+      to the grid itself. On a soft subgrade that would otherwise need undercut and replacement,
+      the same detail is worth several times this.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Packages</b><span>Levers stacked, at the 216-stall base area</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>Package</th><th>Yard $/SF</th><th>Yard $/stall</th><th>Saving</th><th>Cut</th></tr></thead>
+        <tbody>
+          <tr><td>Base heavy-duty section (S1 as modelled)</td><td>$9.45</td><td>$13,702</td><td>&ndash;</td><td>&ndash;</td></tr>
+          <tr><td>A &mdash; value-engineer, keep full pavement</td><td>$8.16</td><td>$11,834</td><td class="pos">$1,869</td><td class="pos">13.6%</td></tr>
+          <tr><td>B &mdash; A + thinner stall section + pads</td><td>$8.03</td><td>$11,643</td><td class="pos">$2,060</td><td class="pos">15.0%</td></tr>
+          <tr><td>C &mdash; hybrid surface (S2 as modelled)</td><td>$6.70</td><td>$9,715</td><td class="pos">$3,988</td><td class="pos">29.1%</td></tr>
+          <tr class="key"><td>D &mdash; hybrid + all compatible levers</td><td>$6.08</td><td>$8,812</td><td class="pos">$4,890</td><td class="pos">35.7%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Package C reproduces the S2 specification already in the model, which is a
+      useful check: the decomposition arrives at $6.70/SF where S2 was budgeted at $6.44/SF.</p>
+    </figure>
+
+    <h3>The larger prize is not the paving contract</h3>
+    <p>At 216 stalls the value-engineered scenario carries $21,813 per stall of fixed cost, of
+    which only $8,280 is land. The remaining $13,533 <em>exceeds the entire yard construction bill
+    of $9,338 per stall</em> &mdash; and unlike material, most of it does not grow with the site at all.</p>
+
+    <figure class="plate">
+      <figcaption><b>Non-land fixed cost</b><span>Classified by how it responds to site size</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>Behaviour</th><th>Items</th><th>$ at 216 stalls</th><th>$ / stall</th><th>What sits here</th></tr></thead>
+        <tbody>
+          <tr><td>Flat per site &mdash; does not grow</td><td>7</td><td>$1,365,000</td><td>$7,394</td><td class="prose">Entitlement, utility service, security head-end, site entry, gatehouse, gates, demolition</td></tr>
+          <tr><td>Grows with perimeter (&radic;area)</td><td>2</td><td>$242,280</td><td>$1,312</td><td class="prose">Perimeter fence, buffer landscaping</td></tr>
+          <tr><td>Grows with impervious area</td><td>1</td><td>$355,000</td><td>$1,923</td><td class="prose">Stormwater basin &amp; treatment</td></tr>
+          <tr class="tot"><td>Total direct non-land fixed</td><td>10</td><td>$1,962,280</td><td>$10,629</td><td class="prose">Loaded for soft costs and contingency</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Perimeter grows as the square root of area, so fence cost per stall halves at
+      four times the site. Stormwater is the only line with no economy of scale at all.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Non-land fixed cost per stall</b><span>Against programme size</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>Stalls</th><th>Gross acres</th><th>Flat $/stall</th><th>Perimeter $/stall</th><th>Stormwater $/stall</th><th>Total $/stall</th><th>vs base</th></tr></thead>
+        <tbody>
+          <tr><td>86</td><td>4.0</td><td>$18,570</td><td>$2,080</td><td>$1,923</td><td>$22,573</td><td class="neg">+112.4%</td></tr>
+          <tr><td>150</td><td>6.9</td><td>$10,647</td><td>$1,575</td><td>$1,923</td><td>$14,145</td><td class="neg">+33.1%</td></tr>
+          <tr class="key"><td>216</td><td>10.0</td><td>$7,394</td><td>$1,312</td><td>$1,923</td><td>$10,629</td><td>base</td></tr>
+          <tr><td>300</td><td>13.9</td><td>$5,324</td><td>$1,114</td><td>$1,923</td><td>$8,360</td><td class="pos">&minus;21.3%</td></tr>
+          <tr><td>450</td><td>20.8</td><td>$3,549</td><td>$909</td><td>$1,923</td><td>$6,381</td><td class="pos">&minus;40.0%</td></tr>
+          <tr><td>600</td><td>27.7</td><td>$2,662</td><td>$787</td><td>$1,923</td><td>$5,372</td><td class="pos">&minus;49.5%</td></tr>
+          <tr><td>900</td><td>41.6</td><td>$1,774</td><td>$643</td><td>$1,923</td><td>$4,340</td><td class="pos">&minus;59.2%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Going from 216 to 600 stalls cuts non-land fixed cost per stall by 49.5%.
+      That is an order of magnitude more than anything available in the paving contract &mdash; and
+      it is the same lever that drives the DSCR result in section 06.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Everything except land</b><span>$ per stall &mdash; scale across, specification down</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>Package</th><th>150 stalls</th><th>216</th><th>300</th><th>450</th><th>600</th></tr></thead>
+        <tbody>
+          <tr><td>Base heavy-duty section</td><td>$29,965</td><td>$26,107</td><td>$23,584</td><td>$21,343</td><td>$20,174</td></tr>
+          <tr><td>A &mdash; value-engineer</td><td>$28,097</td><td>$24,238</td><td>$21,715</td><td>$19,475</td><td>$18,305</td></tr>
+          <tr><td>B &mdash; A + thin stalls + pads</td><td>$27,906</td><td>$24,047</td><td>$21,524</td><td>$19,284</td><td>$18,114</td></tr>
+          <tr><td>C &mdash; hybrid (S2)</td><td>$25,978</td><td>$22,119</td><td>$19,596</td><td>$17,356</td><td>$16,186</td></tr>
+          <tr class="key"><td>D &mdash; hybrid + all levers</td><td>$25,075</td><td>$21,216</td><td>$18,693</td><td>$16,453</td><td>$15,283</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Worst cell $29,965, best cell $15,283 &mdash; a 49% spread, of which roughly
+      two-thirds comes from programme size and one-third from specification. Excludes land,
+      financing carry and the lease-up reserve, so it is not directly comparable to the all-in cost
+      per stall in section 03; it isolates the levers this section is about.</p>
+    </figure>
+
+    <h3>What does not scale, and what gets worse</h3>
+    <ol class="risks">
+      <li><b>Stormwater tracks impervious area almost exactly.</b> Connecticut's industrial
+      stormwater rules require a treatment train plus spill controls, not just detention. A bigger
+      yard buys a bigger basin at the same unit cost. Pervious stall surfacing is the only real
+      relief &mdash; a second, usually unmodelled, argument for the hybrid section.</li>
+      <li><b>Asphalt haul radius is a constraint, not a volume question.</b> HMA has to be placed
+      hot, so a plant more than about 45 minutes out raises cost at any project size. Confirm the
+      nearest plant before trusting any dollar-per-ton figure here.</li>
+      <li><b>Lighting and stall electrical scale linearly with stall count.</b> They are the
+      per-stall discrete items and volume does nothing for them.</li>
+      <li><b>Bonding, builder's risk and construction management are percentages of hard cost.</b>
+      They scale linearly by construction and never dilute.</li>
+      <li><b>Larger sites cross permitting thresholds.</b> Wider traffic study scope, more CT DEEP
+      attention, longer entitlement. Schedule risk rises with size even as cost per stall falls.</li>
+      <li><b>Phasing reverses the mobilisation economy.</b> Each phase re-mobilises every trade,
+      roughly $97,000 a time on this section. Phase for capital or lease-up reasons, never expecting
+      a construction saving.</li>
+    </ol>
+
+    <div class="callout">
+      <div class="k">What to do with this</div>
+      <p class="big">Specify the hybrid section, then buy site size. In that order.</p>
+      <p>The hybrid surface is worth $3,988 per stall on its own and costs nothing but a design
+      decision, and it shrinks the stormwater basin as a side effect. Site size is worth far more
+      &mdash; $5,257 per stall going from 216 to 600 &mdash; but it requires finding and financing the
+      land. Everything else on the list is worth $300 to $900 per stall: real money at 300 stalls,
+      but not what decides this deal.</p>
+    </div>
+  </div>
+</section>
+
 <footer>
   <h3>Method &amp; sources</h3>
   <p style="max-width:78ch">Every figure above is generated by a formula-driven workbook
@@ -810,6 +1033,93 @@ footer li{margin-bottom:7px}
     svg.appendChild(cross);
 
     document.getElementById("c2").appendChild(svg);
+  })();
+
+  /* ---------- Chart 3 : cost behaviour, stacked by line item ---------- */
+  (function(){
+    var host=document.getElementById("c3"); if(!host) return;
+    var data=[
+      {k:"Bituminous surface course",       mob:0.07, prod:1.11, mat:3.17},
+      {k:"Subgrade prep + 12″ base",   mob:0.05, prod:0.86, mat:1.49},
+      {k:"Mass grading & earthwork",        mob:0.09, prod:1.36, mat:0.30},
+      {k:"Storm conveyance in yard",        mob:0.03, prod:0.25, mat:0.20},
+      {k:"Clearing, grubbing, E&S",         mob:0.06, prod:0.24, mat:0.05},
+      {k:"Striping, wheel stops, bollards", mob:0.01, prod:0.06, mat:0.05}
+    ];
+    var W=820,padL=210,padR=96,padT=28,padB=36,rowH=44;
+    var H=padT+padB+data.length*rowH;
+    var maxV=4.6;
+    var x=function(v){return padL+(v/maxV)*(W-padL-padR);};
+    var svg=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Each line item of the base pavement section split into mobilisation, production and material cost. The surface course and aggregate base are majority material; earthwork is majority labour and equipment."});
+    [0,1,2,3,4].forEach(function(v){
+      svg.appendChild(el("line",{x1:x(v),x2:x(v),y1:padT-6,y2:H-padB+2,class:v===0?"axis":"grid"}));
+      var t=el("text",{x:x(v),y:H-padB+18,"text-anchor":"middle"});
+      t.textContent="$"+v.toFixed(0); svg.appendChild(t);
+    });
+    var segs=[["mob","var(--s-mob)","Mobilisation"],["prod","var(--s-prod)","Production"],["mat","var(--s-mat)","Material"]];
+    data.forEach(function(d,i){
+      var y=padT+i*rowH, bh=24, by=y+8;
+      var lab=el("text",{x:padL-12,y:by+bh/2+4,"text-anchor":"end","font-size":"11"});
+      lab.textContent=d.k; lab.setAttribute("fill","var(--ink)"); svg.appendChild(lab);
+      var tot=d.mob+d.prod+d.mat, run=0;
+      segs.forEach(function(sg){
+        var v=d[sg[0]], w=x(v)-padL;
+        if(w<=0.6) { run+=v; return; }
+        var rx=x(run)+(run>0?2:0), rw=Math.max(w-(run>0?2:0),1);
+        var rect=el("rect",{x:rx,y:by,width:rw,height:bh,fill:sg[1]});
+        svg.appendChild(rect);
+        bind(rect,"<b>"+d.k+"</b><br>"+sg[2]+" $"+v.toFixed(2)+"/SF<br>"+
+          Math.round(v/tot*100)+"% of this line item");
+        run+=v;
+      });
+      var tl=el("text",{x:x(tot)+10,y:by+bh/2+4,class:"val"});
+      tl.textContent="$"+tot.toFixed(2); svg.appendChild(tl);
+      var pl=el("text",{x:x(tot)+58,y:by+bh/2+4,"font-size":"10"});
+      pl.textContent=Math.round(d.mat/tot*100)+"% mat"; svg.appendChild(pl);
+    });
+    host.appendChild(svg);
+  })();
+
+  /* ---------- Chart 4 : specification levers ---------- */
+  (function(){
+    var host=document.getElementById("c4"); if(!host) return;
+    var data=[
+      {k:"Hybrid surface — millings stalls", v:-3988},
+      {k:"Thinner HMA in stall areas only", v:-863},
+      {k:"Balanced cut/fill", v:-652},
+      {k:"On-site crush & reuse of demo", v:-507},
+      {k:"25% RAP content in mix", v:-474},
+      {k:"Geogrid — base 12″ to 8″", v:-449},
+      {k:"Millings for lower 6″ of base", v:-294},
+      {k:"ADD concrete landing-gear pads", v:+672}
+    ];
+    var W=820,padL=268,padR=86,padT=26,padB=34,rowH=34;
+    var H=padT+padB+data.length*rowH;
+    var lo=-4200, hi=900;
+    var x=function(v){return padL+((v-lo)/(hi-lo))*(W-padL-padR);};
+    var zero=x(0);
+    var svg=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Specification levers ranked by dollars per stall. The hybrid surface saves 3,988 dollars per stall, several times any other lever; concrete landing-gear pads are a deliberate 672 dollar add."});
+    [-4000,-3000,-2000,-1000,0,1000].forEach(function(v){
+      svg.appendChild(el("line",{x1:x(v),x2:x(v),y1:padT-6,y2:H-padB+2,class:v===0?"axis":"grid"}));
+      var t=el("text",{x:x(v),y:H-padB+18,"text-anchor":"middle"});
+      t.textContent=(v<0?"−$":"$")+Math.abs(v/1000)+"k"; svg.appendChild(t);
+    });
+    data.forEach(function(d,i){
+      var y=padT+i*rowH, bh=19, by=y+6;
+      var lab=el("text",{x:padL-224,y:by+bh/2+4,"font-size":"11"});
+      lab.textContent=d.k; lab.setAttribute("fill","var(--ink)"); svg.appendChild(lab);
+      var x0=Math.min(zero,x(d.v)), w=Math.abs(x(d.v)-zero);
+      var rect=el("rect",{x:x0,y:by,width:Math.max(w,1),height:bh,
+                          fill:d.v<0?"var(--s-fixed)":"var(--warn)"});
+      svg.appendChild(rect);
+      bind(rect,"<b>"+d.k+"</b><br>"+(d.v<0?"saves ":"adds ")+"$"+Math.abs(d.v).toLocaleString()+
+        " per stall<br>"+(Math.abs(d.v)/13702*100).toFixed(1)+"% of yard construction");
+      var tx=d.v<0?zero+8:x0+w+8;
+      var tl=el("text",{x:tx,y:by+bh/2+4,class:"val","text-anchor":"start"});
+      tl.textContent=(d.v<0?"−$":"+$")+Math.abs(d.v).toLocaleString();
+      svg.appendChild(tl);
+    });
+    host.appendChild(svg);
   })();
 })();
 </script>

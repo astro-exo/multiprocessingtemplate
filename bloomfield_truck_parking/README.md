@@ -11,6 +11,7 @@ Capex (fixed and variable) → cost per stall → NOI → DSCR.
 | `verify.py` | Independent pure-Python replication of the same math. Used to cross-check the spreadsheet and to source every number quoted below. |
 | `deal_box.py` | Lever sweeps: rate × land price, density, site scale, and the bracketed viable case. |
 | `verify_workbook.py` | Evaluates every formula in the workbook and diffs the Summary tab against `verify.py`. Exits non-zero on any Excel error or mismatch. |
+| `construction_scale.py` | Economies of scale in yard construction: cost-behaviour decomposition, the scale curve, specification levers and non-land fixed-cost scaling. |
 
 Rebuild with `python3 build_model.py`, then check it with `python3 verify_workbook.py`.
 
@@ -124,6 +125,82 @@ DSCR at 65% LTC for the value-engineered program, across rate and land basis:
 
 At the modeled $315/month, no land price clears — **not even free land.** The rate has
 to move first; land basis alone cannot rescue the deal.
+
+## Economies of scale in construction
+
+The scenario tables price yard construction as a flat rate per SF, which hides where the
+money goes. `construction_scale.py` and the `Construction_Scale` workbook tab split the
+section into how each dollar behaves.
+
+| Cost behaviour | $/SF | Share | $/stall |
+|---|---|---|---|
+| Mobilisation — fixed per contract | $0.31 | 3.3% | $450 |
+| Production — labour & equipment hours | $3.88 | 41.1% | $5,626 |
+| **Material — tonnage in the ground** | **$5.26** | **55.7%** | **$7,627** |
+| Total | $9.45 | 100% | $13,702 |
+
+**Volume is a weak lever.** Material is 56% of the section, and at 216 stalls the job already
+buys 30,885 tons — the best volume tier available. Tripling the yard from 7 to 20 acres takes
+only **4.9%** off construction cost per stall.
+
+| Paved acres | Stalls | $/SF | $/stall | vs base |
+|---|---|---|---|---|
+| 3 | 90 | $10.23 | $14,840 | +8.3% |
+| 7.19 | 216 | $9.45 | $13,702 | base |
+| 15 | 451 | $9.09 | $13,186 | −3.8% |
+| 30 | 901 | $8.85 | $12,825 | −6.4% |
+
+**Specification is the strong lever.** Ranked by impact per stall:
+
+| Lever | $/stall | % of yard |
+|---|---|---|
+| Hybrid surface — paved aisles, millings stalls | −$3,988 | −29.1% |
+| Thinner HMA in stall areas only (5″→4″) | −$863 | −6.3% |
+| Balanced cut/fill — no import, no export | −$652 | −4.8% |
+| On-site crush & reuse of demo concrete | −$507 | −3.7% |
+| 25% RAP content in the HMA mix | −$474 | −3.5% |
+| Geogrid — aggregate base 12″→8″ | −$449 | −3.3% |
+| Millings for the lower 6″ of base | −$294 | −2.1% |
+| ADD: concrete landing-gear pads | +$672 | +4.9% |
+
+Stacked into packages, at the 216-stall base area:
+
+| Package | Yard $/SF | Yard $/stall | Cut |
+|---|---|---|---|
+| Base heavy-duty section (S1) | $9.45 | $13,702 | — |
+| A — value-engineer, keep full pavement | $8.16 | $11,834 | 13.6% |
+| B — A + thinner stall section + pads | $8.03 | $11,643 | 15.0% |
+| C — hybrid surface (S2) | $6.70 | $9,715 | 29.1% |
+| D — hybrid + all compatible levers | $6.08 | $8,812 | 35.7% |
+
+**The larger prize is not the paving contract.** At 216 stalls S2 carries $21,813/stall of
+fixed cost, only $8,280 of which is land. The remaining $13,533 exceeds the entire yard
+construction bill of $9,338/stall — and most of it does not grow with the site:
+
+| Behaviour | $ at 216 stalls | $/stall |
+|---|---|---|
+| Flat per site (entitlement, utilities, security, entry, gatehouse, gates, demo) | $1,365,000 | $7,394 |
+| Grows with perimeter (√area) — fence, buffer landscaping | $242,280 | $1,312 |
+| Grows with impervious area — stormwater | $355,000 | $1,923 |
+
+Going from 216 to 600 stalls cuts non-land fixed cost per stall by **49.5%** — an order of
+magnitude more than anything available in the paving contract.
+
+Everything except land, $/stall:
+
+| Package | 150 | 216 | 300 | 450 | 600 |
+|---|---|---|---|---|---|
+| Base section | $29,965 | $26,107 | $23,584 | $21,343 | $20,174 |
+| C — hybrid (S2) | $25,978 | $22,119 | $19,596 | $17,356 | $16,186 |
+| D — hybrid + all levers | $25,075 | $21,216 | $18,693 | $16,453 | $15,283 |
+
+Worst to best is a 49% spread — roughly two-thirds programme size, one-third specification.
+
+**What does not scale:** stormwater tracks impervious area exactly; asphalt haul radius is a
+hard constraint (HMA must be placed hot, so a plant beyond ~45 minutes raises cost at any
+size); lighting and stall electrical scale linearly with stall count; bonding, builder's risk
+and CM are percentages of hard cost. Phasing *reverses* the mobilisation economy — each phase
+re-mobilises every trade, roughly $97,000 a time.
 
 ## Risks that sit outside the model
 

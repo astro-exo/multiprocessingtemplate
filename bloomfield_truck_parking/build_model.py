@@ -1561,11 +1561,498 @@ hr_y, r = ggrid(r, "GRID E  |  Yield on cost",
         f"{cl}{hr_noi + (rr - hr)}/({cl}{hr_cps + (rr - hr)}"
         f"*{cl}{hr_st + (rr - hr)}))"), P2)
 
+# =====================================================================
+# CONSTRUCTION SCALE  -  cost behaviour, scale curve, specification levers
+# =====================================================================
+K = sheet("Construction_Scale", [46, 13, 12, 12, 12, 12, 12, 12, 12, 46])
+title(K, "Economies of Scale in Yard Construction  -  and the levers that beat them",
+      "Splits the section into mobilisation / production / material, then prices design changes against the same basis. Calibrated so the base case reproduces the $9.45/SF used for S1.")
+r = 4
+KR = {}
+
+
+def kline(row, label, unit, val, fmt, font=BLUE, note=None, col=3, bold=False, fill=None):
+    c = K.cell(row=row, column=1, value=label)
+    c.font = BOLD if bold else Font(name=F, size=10)
+    K.cell(row=row, column=2, value=unit).font = Font(name=F, size=9, color="595959")
+    cell = K.cell(row=row, column=col, value=val)
+    cell.number_format = fmt
+    cell.font = BOLD if (bold and font is BLACK) else font
+    if fill:
+        cell.fill = fill
+    if note:
+        n = K.cell(row=row, column=10, value=note)
+        n.font = NOTE
+        n.alignment = Alignment(wrap_text=True, vertical="top")
+    return row + 1
+
+
+r = section(K, r, "A.  UNIT PRICES & QUANTITIES", last_col="J")
+for key, lab, unit, val, fmt, note in [
+    ("hma_price", "Hot-mix asphalt, delivered", "$ / ton", 105.0, M2,
+     "CT plant price for a binder/wearing mix. National HMA $80-160/t, average ~$110; CT construction runs ~1.32x national."),
+    ("agg_price", "Processed aggregate base, delivered", "$ / ton", 22.0, M2, None),
+    ("rap_price", "Recycled asphalt millings (RAP), delivered", "$ / ton", 16.0, M2,
+     "Millings $7-25/ton in 2026; $15-35/ton delivered and placed."),
+    ("geogrid", "Triaxial geogrid, installed", "$ / SY", 4.25, M2,
+     "Biaxial $2-3/SY, triaxial $3-5/SY. Buys a 25-50% base-thickness reduction."),
+    ("hma_in", "HMA thickness - base section", "inches", 5.0, N1,
+     "3\" binder + 2\" wearing course."),
+    ("agg_in", "Aggregate base thickness - base section", "inches", 12.0, N1, None),
+    ("hma_dens", "HMA tonnage", "tons / SF / inch", 0.006222, '0.000000',
+     "~112 lb per SY per inch of compacted HMA."),
+    ("agg_dens", "Aggregate tonnage", "tons / SF / inch", 0.005625, '0.000000',
+     "~135 lb per CF compacted."),
+    ("sf_stall", "Paved area per stall", "SF", 1450, N0, None),
+    ("stall_share", "Share of yard that is stall, not aisle", "%", 0.68, P1, None),
+]:
+    KR[key] = r
+    r = kline(r, lab, unit, val, fmt, note=note)
+
+KR["base_sf"] = r
+r = kline(r, "Base-case paved yard area", "SF", f"={aref('yard_sf','C')}", N0, font=GREEN)
+
+r += 1
+r = section(K, r, "B.  COST BEHAVIOUR OF THE BASE HEAVY-DUTY SECTION  ($ per SF of paved yard)", last_col="J")
+hb = r
+for i, lab in enumerate(["Cost item", "", "Mobilisation", "Production", "Material", "Total", "Material %"]):
+    c = K.cell(row=hb, column=1 + i, value=lab)
+    c.font = HDR
+    c.fill = FILL_HDR
+    c.alignment = Alignment(horizontal="center" if i >= 2 else "left", wrap_text=True, vertical="center")
+K.row_dimensions[hb].height = 28
+r += 1
+BEHAV = [
+    ("Clearing, grubbing, erosion control", 0.06, 0.24, 0.05),
+    ("Mass grading & earthwork", 0.09, 1.36, 0.30),
+    ("Subgrade prep + aggregate base", 0.05, 0.86, 1.49),
+    ("Bituminous surface course", 0.07, 1.11, 3.17),
+    ("Storm conveyance within yard", 0.03, 0.25, 0.20),
+    ("Striping, wheel stops, bollards", 0.01, 0.06, 0.05),
+]
+KR["b_first"] = r
+for lab, m, p, mt in BEHAV:
+    K.cell(row=r, column=1, value=lab).font = Font(name=F, size=10)
+    for j, v in enumerate([m, p, mt]):
+        c = K.cell(row=r, column=3 + j, value=v)
+        c.number_format = M2
+        c.font = BLUE
+    K.cell(row=r, column=6, value=f"=SUM(C{r}:E{r})").number_format = M2
+    K.cell(row=r, column=6).font = BLACK
+    K.cell(row=r, column=7, value=f"=IF(F{r}=0,0,E{r}/F{r})").number_format = P1
+    K.cell(row=r, column=7).font = BLACK
+    r += 1
+KR["b_last"] = r - 1
+KR["mob"], KR["prod"], KR["mat"] = r, r, r
+K.cell(row=r, column=1, value="$ per SF of paved yard").font = BOLD
+for j, col in enumerate("CDE"):
+    c = K.cell(row=r, column=3 + j, value=f"=SUM({col}{KR['b_first']}:{col}{KR['b_last']})")
+    c.number_format = M2
+    c.font = BOLD
+    c.fill = FILL_TOT
+K.cell(row=r, column=6, value=f"=SUM(C{r}:E{r})").number_format = M2
+K.cell(row=r, column=6).font = BOLD
+K.cell(row=r, column=6).fill = FILL_OUT
+K.cell(row=r, column=7, value=f"=E{r}/F{r}").number_format = P1
+K.cell(row=r, column=7).font = BOLD
+KR["tot_sf"] = r
+r += 1
+K.cell(row=r, column=1, value="   share of yard construction").font = Font(name=F, size=10)
+for j, col in enumerate("CDE"):
+    c = K.cell(row=r, column=3 + j, value=f"={col}{KR['tot_sf']}/$F${KR['tot_sf']}")
+    c.number_format = P1
+    c.font = BLACK
+r += 1
+K.cell(row=r, column=1, value="   $ per stall").font = Font(name=F, size=10)
+for j, col in enumerate("CDEF"):
+    c = K.cell(row=r, column=3 + j, value=f"={col}{KR['tot_sf']}*$C${KR['sf_stall']}")
+    c.number_format = M0
+    c.font = BLACK
+K.cell(row=r, column=10, value="Material is the majority of the section - and material is the part that barely responds to volume.").font = NOTE
+r += 1
+KR["mob_dollars"] = r
+r = kline(r, "Fixed mobilisation, all trades combined", "$",
+          f"=C{KR['tot_sf']}*$C${KR['base_sf']}", M0, font=BLACK, bold=True,
+          note="Earthwork spread, paving train, milling machine, aggregate placement, striping crew, survey, testing. Incurred once per contract - this is the only genuinely fixed piece of the paving bill.")
+KR["base_tons"] = r
+r = kline(r, "Base-case bulk tonnage (HMA + aggregate)", "tons",
+          f"=$C${KR['base_sf']}*($C${KR['hma_dens']}*$C${KR['hma_in']}+$C${KR['agg_dens']}*$C${KR['agg_in']})",
+          N0, font=BLACK)
+KR["bulk_mat"] = r
+r = kline(r, "Bulk material content of the section", "$ / SF",
+          f"=$C${KR['hma_dens']}*$C${KR['hma_in']}*$C${KR['hma_price']}"
+          f"+$C${KR['agg_dens']}*$C${KR['agg_in']}*$C${KR['agg_price']}", M2, font=BLACK)
+KR["other_mat"] = r
+r = kline(r, "Other material (does not tier)", "$ / SF",
+          f"=E{KR['tot_sf']}-C{KR['bulk_mat']}", M2, font=BLACK)
+
+r += 1
+r = section(K, r, "C.  SCALE PARAMETERS", last_col="J")
+KR["prod_exp"] = r
+r = kline(r, "Production learning exponent", "", 0.070, '0.000',
+          note="Each doubling of paved area takes ~4.7% off the unit production rate.", )
+KR["prod_floor"] = r
+r = kline(r, "Production rate floor", "% of base", 0.82, P1,
+          note="Crews cannot beat their own maximum daily output, so the curve flattens.")
+KR["tier_lab"] = r
+K.cell(row=r, column=1, value="Material volume tiers (tons / factor)").font = Font(name=F, size=10)
+for j, (cap, fac) in enumerate([(2000, 1.00), (5000, 0.97), (10000, 0.94), (20000, 0.91)]):
+    c = K.cell(row=r, column=3 + j, value=cap)
+    c.number_format = N0
+    c.font = BLUE
+    c2 = K.cell(row=r + 1, column=3 + j, value=fac)
+    c2.number_format = '0.00'
+    c2.font = BLUE
+K.cell(row=r, column=7, value="20,000+").font = Font(name=F, size=9, color="595959")
+c = K.cell(row=r + 1, column=7, value=0.89)
+c.number_format = '0.00'
+c.font = BLUE
+K.cell(row=r, column=10, value="Contractors ordering 500+ tons negotiate materially better pricing than 50-ton buyers; bulk orders above 20 tons typically see 5-15% off.").font = NOTE
+K.cell(row=r, column=10).alignment = Alignment(wrap_text=True, vertical="top")
+KR["tier_caps"] = r
+KR["tier_facs"] = r + 1
+r += 2
+
+
+def tier_expr(tons_ref):
+    tc, tf = KR["tier_caps"], KR["tier_facs"]
+    return (f"IF({tons_ref}<=$C${tc},$C${tf},IF({tons_ref}<=$D${tc},$D${tf},"
+            f"IF({tons_ref}<=$E${tc},$E${tf},IF({tons_ref}<=$F${tc},$F${tf},$G${tf}))))")
+
+
+KR["base_tier"] = r
+r = kline(r, "Tier factor already captured at base scale", "",
+          "=" + tier_expr(f"$C${KR['base_tons']}"), '0.00', font=BLACK,
+          note="The base case already sits in the best available tier, so tonnage pricing has nothing left to give as the site grows.")
+
+r += 1
+r = section(K, r, "D.  THE SCALE CURVE  -  what volume alone can do", last_col="J")
+hs = r
+for i, lab in enumerate(["", "Paved acres", "Stalls", "Bulk tons", "Mobilise $/SF",
+                         "Production $/SF", "Material $/SF", "Total $/SF", "$ / stall", "vs base"]):
+    c = K.cell(row=hs, column=1 + i, value=lab)
+    c.font = HDR
+    c.fill = FILL_HDR
+    c.alignment = Alignment(horizontal="center", wrap_text=True, vertical="center")
+K.row_dimensions[hs].height = 30
+r += 1
+KR["curve_first"] = r
+ACRES = [1, 2, 3, 5, 7.19, 10, 15, 20, 30, 50]
+for ac in ACRES:
+    K.cell(row=r, column=2, value=ac).number_format = N2
+    K.cell(row=r, column=2).font = BLUE
+    K.cell(row=r, column=2).fill = FILL_TOT
+    area = f"($B{r}*43560)"
+    K.cell(row=r, column=3, value=f"={area}/$C${KR['sf_stall']}").number_format = N0
+    K.cell(row=r, column=4, value=f"={area}*($C${KR['hma_dens']}*$C${KR['hma_in']}"
+                                  f"+$C${KR['agg_dens']}*$C${KR['agg_in']})").number_format = N0
+    K.cell(row=r, column=5, value=f"=$C${KR['mob_dollars']}/{area}").number_format = M2
+    K.cell(row=r, column=6, value=f"=$D${KR['tot_sf']}*MAX($C${KR['prod_floor']},"
+                                  f"({area}/$C${KR['base_sf']})^-$C${KR['prod_exp']})").number_format = M2
+    K.cell(row=r, column=7, value=f"=({tier_expr(f'$D{r}')})/$C${KR['base_tier']}*$C${KR['bulk_mat']}"
+                                  f"+$C${KR['other_mat']}").number_format = M2
+    K.cell(row=r, column=8, value=f"=SUM(E{r}:G{r})").number_format = M2
+    K.cell(row=r, column=9, value=f"=H{r}*$C${KR['sf_stall']}").number_format = M0
+    for cc in range(3, 10):
+        K.cell(row=r, column=cc).font = BLACK
+        K.cell(row=r, column=cc).border = BOXB
+    r += 1
+KR["curve_last"] = r - 1
+KR["curve_base"] = KR["curve_first"] + ACRES.index(7.19)
+for rr in range(KR["curve_first"], KR["curve_last"] + 1):
+    c = K.cell(row=rr, column=10, value=f"=H{rr}/$H${KR['curve_base']}-1")
+    c.number_format = P1
+    c.font = BLACK
+    c.border = BOXB
+K.cell(row=KR["curve_base"], column=1, value="base case  ->").font = Font(name=F, size=9, bold=True, color="1F3864")
+K.cell(row=KR["curve_last"] + 1, column=1,
+       value="Scale in construction is bounded: material is the majority of the section and the base case already sits in the top volume tier.").font = NOTE
+r += 2
+
+r = section(K, r, "E.  SPECIFICATION LEVERS  -  changing what gets built, not how much", last_col="J")
+hl = r
+for i, lab in enumerate(["Lever", "", "$ / SF", "$ / stall", "% of yard", "", "", "", "", "Note"]):
+    c = K.cell(row=hl, column=1 + i, value=lab)
+    c.font = HDR
+    c.fill = FILL_HDR
+    c.alignment = Alignment(horizontal="center" if 2 <= i <= 4 else "left", wrap_text=True, vertical="center")
+K.row_dimensions[hl].height = 26
+r += 1
+KR["lev_first"] = r
+agg_place = f"($D${KR['tot_sf']}*0+0.86/$C${KR['agg_in']})"      # $/SF per inch of base placement
+hma_place = f"(1.11/$C${KR['hma_in']})"                           # $/SF per inch of HMA placement
+LEVERS = [
+    ("Geogrid - aggregate base 12\" to 8\"",
+     f"=-(4*$C${KR['agg_dens']}*$C${KR['agg_price']})-4*{agg_place}+$C${KR['geogrid']}/9",
+     "Triaxial geogrid at ~$4.25/SY installed buys a 25-50% base reduction, and de-risks soft subgrade. Modest here because CT aggregate is cheap relative to the grid; the payoff is much larger where undercut would otherwise be needed."),
+    ("25% RAP content in the HMA mix",
+     f"=-0.10*($C${KR['hma_dens']}*$C${KR['hma_in']}*$C${KR['hma_price']})",
+     "Recycled asphalt pavement in the mix takes 8-15% off mix price. Confirm the nearest plant's RAP capability before assuming it."),
+    ("Millings for the lower 6\" of base",
+     f"=-6*$C${KR['agg_dens']}*($C${KR['agg_price']}-$C${KR['rap_price']})",
+     "Crushed RAP against processed aggregate. Supply is opportunistic - it depends on what milling jobs are running nearby."),
+    ("Balanced cut/fill - no import, no export",
+     "=-0.45",
+     "Removes both the import-fill material and the export haul. Has to be designed in from the first grading plan; it is not a change order."),
+    ("Thinner HMA in stall areas only (5\" to 4\")",
+     f"=-$C${KR['stall_share']}*($C${KR['hma_dens']}*$C${KR['hma_price']}+{hma_place})",
+     "Drive aisles keep the full section. Real rutting risk under static trailer loads - pair it with landing-gear pads."),
+    ("Hybrid surface: paved aisles, millings stalls",
+     "=-2.75",
+     "The S2 specification. Largest single lever by a wide margin, and it also shrinks the stormwater basin because the stall area is far less impervious."),
+    ("On-site crush & reuse of demo concrete/pavement",
+     "=-0.35",
+     "Only where a structure or existing pavement is coming out. Avoids the export haul AND the import purchase - it counts twice."),
+    ("ADD: concrete landing-gear pads, 48 SF/stall",
+     "=48*14/$C$" + str(KR['sf_stall']),
+     "A deliberate cost ADD. Stops the punch-through failure at the trailer landing gear that otherwise drives premature reconstruction of the stall."),
+]
+for lab, formula, note in LEVERS:
+    K.cell(row=r, column=1, value=lab).font = Font(name=F, size=10)
+    c = K.cell(row=r, column=3, value=formula)
+    c.number_format = '$#,##0.00;($#,##0.00)'
+    c.font = BLACK
+    K.cell(row=r, column=4, value=f"=C{r}*$C${KR['sf_stall']}").number_format = '$#,##0;($#,##0)'
+    K.cell(row=r, column=4).font = BLACK
+    K.cell(row=r, column=5, value=f"=C{r}/$F${KR['tot_sf']}").number_format = '0.0%;(0.0%)'
+    K.cell(row=r, column=5).font = BLACK
+    n = K.cell(row=r, column=10, value=note)
+    n.font = NOTE
+    n.alignment = Alignment(wrap_text=True, vertical="top")
+    K.row_dimensions[r].height = 30
+    r += 1
+KR["lev_last"] = r - 1
+r += 1
+
+r = section(K, r, "F.  PACKAGES  -  1 includes the lever, 0 excludes it", last_col="J")
+hp = r
+PKG = ["Base section", "A  Value-engineer", "B  A + thin stalls", "C  Hybrid (S2)", "D  Hybrid + all"]
+K.cell(row=hp, column=1, value="Lever").font = HDR
+K.cell(row=hp, column=1).fill = FILL_HDR
+for j, p in enumerate(PKG):
+    c = K.cell(row=hp, column=3 + j, value=p)
+    c.font = HDR
+    c.fill = FILL_HDR
+    c.alignment = Alignment(horizontal="center", wrap_text=True, vertical="center")
+K.row_dimensions[hp].height = 32
+r += 1
+FLAGS = [
+    [0, 1, 1, 0, 1],   # geogrid
+    [0, 1, 1, 0, 1],   # RAP
+    [0, 1, 1, 0, 0],   # millings base
+    [0, 1, 1, 0, 1],   # balanced cut/fill
+    [0, 0, 1, 0, 0],   # thinner stall HMA
+    [0, 0, 0, 1, 1],   # hybrid surface
+    [0, 0, 0, 0, 0],   # crush & reuse
+    [0, 0, 1, 0, 1],   # landing-gear pads
+]
+KR["flag_first"] = r
+for i, (lab, _, _) in enumerate(LEVERS):
+    K.cell(row=r, column=1, value=lab).font = Font(name=F, size=9)
+    for j, v in enumerate(FLAGS[i]):
+        c = K.cell(row=r, column=3 + j, value=v)
+        c.number_format = N0
+        c.font = BLUE
+        c.alignment = Alignment(horizontal="center")
+        c.border = BOXB
+    r += 1
+KR["flag_last"] = r - 1
+KR["pkg_delta"] = r
+K.cell(row=r, column=1, value="Package delta").font = BOLD
+for j in range(len(PKG)):
+    col = get_column_letter(3 + j)
+    c = K.cell(row=r, column=3 + j,
+               value=f"=SUMPRODUCT({col}{KR['flag_first']}:{col}{KR['flag_last']},"
+                     f"$C${KR['lev_first']}:$C${KR['lev_last']})")
+    c.number_format = '$#,##0.00;($#,##0.00)'
+    c.font = BOLD
+    c.fill = FILL_TOT
+r += 1
+KR["pkg_sf"] = r
+K.cell(row=r, column=1, value="Yard construction $/SF").font = BOLD
+for j in range(len(PKG)):
+    col = get_column_letter(3 + j)
+    c = K.cell(row=r, column=3 + j, value=f"=$F${KR['tot_sf']}+{col}{KR['pkg_delta']}")
+    c.number_format = M2
+    c.font = BOLD
+r += 1
+KR["pkg_stall"] = r
+K.cell(row=r, column=1, value="Yard construction $/stall").font = BOLD
+for j in range(len(PKG)):
+    col = get_column_letter(3 + j)
+    c = K.cell(row=r, column=3 + j, value=f"={col}{KR['pkg_sf']}*$C${KR['sf_stall']}")
+    c.number_format = M0
+    c.font = BOLD
+    c.fill = FILL_OUT
+r += 1
+K.cell(row=r, column=1, value="   cut vs. base section").font = Font(name=F, size=10)
+for j in range(len(PKG)):
+    col = get_column_letter(3 + j)
+    c = K.cell(row=r, column=3 + j, value=f"={col}{KR['pkg_sf']}/$C${KR['pkg_sf']}-1")
+    c.number_format = '0.0%;(0.0%)'
+    c.font = BLACK
+r += 2
+r = section(K, r, "G.  NON-LAND FIXED COST  -  the larger prize, and it scales harder", last_col="J")
+K.cell(row=r, column=1, value="At 216 stalls, S2 carries $21,813/stall of fixed cost, of which only $8,280 is land. The remaining non-land fixed cost exceeds the entire yard construction bill per stall - and most of it does not grow with the site at all.").font = NOTE
+K.cell(row=r, column=1).alignment = Alignment(wrap_text=True, vertical="top")
+K.row_dimensions[r].height = 26
+r += 1
+hf2 = r
+for i, lab in enumerate(["Item", "", "$ at base scale", "Behaviour", "", "", "", "", "", "Note"]):
+    c = K.cell(row=hf2, column=1 + i, value=lab)
+    c.font = HDR
+    c.fill = FILL_HDR
+    c.alignment = Alignment(horizontal="center" if i in (2, 3) else "left", wrap_text=True, vertical="center")
+r += 1
+FIXED = [
+    ("Pre-development, design, entitlement", 445000, "flat"),
+    ("Utility service & transformer", 185000, "flat"),
+    ("Security head-end (NVR, analytics)", 175000, "flat"),
+    ("Site entry, apron, turn lane", 175000, "flat"),
+    ("Gatehouse / driver services", 145000, "flat"),
+    ("Automated gates & access control", 145000, "flat"),
+    ("Demolition & clearing outside yard", 95000, "flat"),
+    ("Perimeter fence", 137280, "perimeter"),
+    ("Landscaping & buffer plantings", 105000, "perimeter"),
+    ("Stormwater basin & treatment", 355000, "area"),
+]
+KR["fix_first"] = r
+for lab, amt, beh in FIXED:
+    K.cell(row=r, column=1, value=lab).font = Font(name=F, size=10)
+    c = K.cell(row=r, column=3, value=amt)
+    c.number_format = M0
+    c.font = BLUE
+    b = K.cell(row=r, column=4, value=beh)
+    b.font = Font(name=F, size=9, color="595959")
+    b.alignment = Alignment(horizontal="center")
+    r += 1
+KR["fix_last"] = r - 1
+KR["fix_flat"] = r
+r = kline(r, "Flat per site - does not grow at all", "$",
+          f'=SUMIF($D${KR["fix_first"]}:$D${KR["fix_last"]},"flat",$C${KR["fix_first"]}:$C${KR["fix_last"]})',
+          M0, font=BLACK, bold=True)
+KR["fix_perim"] = r
+r = kline(r, "Grows with perimeter (square root of area)", "$",
+          f'=SUMIF($D${KR["fix_first"]}:$D${KR["fix_last"]},"perimeter",$C${KR["fix_first"]}:$C${KR["fix_last"]})',
+          M0, font=BLACK, bold=True)
+KR["fix_area"] = r
+r = kline(r, "Grows with impervious area - no economy of scale", "$",
+          f'=SUMIF($D${KR["fix_first"]}:$D${KR["fix_last"]},"area",$C${KR["fix_first"]}:$C${KR["fix_last"]})',
+          M0, font=BLACK, bold=True)
+KR["loading"] = r
+r = kline(r, "Soft-cost loadings + contingency", "x", 1.17, X2,
+          note="5% soft loadings plus 12% contingency, applied to the direct items above.")
+KR["base_stalls"] = r
+r = kline(r, "Stalls at base scale", "stalls", 216, N0)
+
+r += 1
+hg = r
+for i, lab in enumerate(["", "Stalls", "Gross acres", "Flat $/stall", "Perimeter $/stall",
+                         "Stormwater $/stall", "Total $/stall", "vs base", "", ""]):
+    c = K.cell(row=hg, column=1 + i, value=lab)
+    c.font = HDR
+    c.fill = FILL_HDR
+    c.alignment = Alignment(horizontal="center", wrap_text=True, vertical="center")
+K.row_dimensions[hg].height = 30
+r += 1
+KR["g_first"] = r
+for st in [86, 150, 216, 300, 450, 600, 900]:
+    K.cell(row=r, column=2, value=st).number_format = N0
+    K.cell(row=r, column=2).font = BLUE
+    K.cell(row=r, column=2).fill = FILL_TOT
+    sc = f"($B{r}/$C${KR['base_stalls']})"
+    K.cell(row=r, column=3, value=f"=$B{r}*$C${KR['sf_stall']}/{aref('yield_pct','D')}/43560").number_format = N1
+    K.cell(row=r, column=4, value=f"=$C${KR['fix_flat']}*$C${KR['loading']}/$B{r}").number_format = M0
+    K.cell(row=r, column=5, value=f"=$C${KR['fix_perim']}*{sc}^0.5*$C${KR['loading']}/$B{r}").number_format = M0
+    K.cell(row=r, column=6, value=f"=$C${KR['fix_area']}*{sc}*$C${KR['loading']}/$B{r}").number_format = M0
+    K.cell(row=r, column=7, value=f"=SUM(D{r}:F{r})").number_format = M0
+    for cc in range(3, 8):
+        K.cell(row=r, column=cc).font = BLACK
+        K.cell(row=r, column=cc).border = BOXB
+    K.cell(row=r, column=7).font = BOLD
+    r += 1
+KR["g_last"] = r - 1
+KR["g_base"] = KR["g_first"] + 2
+for rr in range(KR["g_first"], KR["g_last"] + 1):
+    c = K.cell(row=rr, column=8, value=f"=G{rr}/$G${KR['g_base']}-1")
+    c.number_format = '0.0%;(0.0%)'
+    c.font = BLACK
+    c.border = BOXB
+K.cell(row=KR["g_base"], column=1, value="base case  ->").font = Font(name=F, size=9, bold=True, color="1F3864")
+r += 1
+
+r = section(K, r, "H.  EVERYTHING EXCEPT LAND  -  $ per stall, scale against specification", last_col="J")
+K.cell(row=r, column=1, value="Yard construction at the row's package + per-stall discrete items + non-land fixed cost. Excludes land, financing carry and the lease-up reserve, so it is not directly comparable to the all-in cost per stall on the Summary tab - it isolates the construction and site-cost levers.").font = NOTE
+K.cell(row=r, column=1).alignment = Alignment(wrap_text=True, vertical="top")
+K.row_dimensions[r].height = 26
+r += 1
+KR["discrete"] = r
+r = kline(r, "Per-stall discrete items (lighting, electrical, cameras)", "$ / stall",
+          f"={vref('st_sub','D')}", M0, font=GREEN)
+hh = r
+K.cell(row=hh, column=1, value="Package").font = HDR
+K.cell(row=hh, column=1).fill = FILL_HDR
+K.cell(row=hh, column=2, value="").fill = FILL_HDR
+STALLS = [150, 216, 300, 450, 600]
+for j, st in enumerate(STALLS):
+    c = K.cell(row=hh, column=3 + j, value=st)
+    c.font = HDR
+    c.fill = FILL_HDR
+    c.number_format = N0
+    c.alignment = Alignment(horizontal="center")
+K.cell(row=hh, column=3 + len(STALLS), value="stalls").font = Font(name=F, size=9, color="595959")
+r += 1
+KR["h_first"] = r
+for i, p in enumerate(PKG):
+    K.cell(row=r, column=1, value=p).font = Font(name=F, size=10)
+    pcol = get_column_letter(3 + i)
+    for j, st in enumerate(STALLS):
+        area = f"({st}*$C${KR['sf_stall']})"
+        mob = f"$C${KR['mob_dollars']}/{area}"
+        prod = (f"$D${KR['tot_sf']}*MAX($C${KR['prod_floor']},"
+                f"({area}/$C${KR['base_sf']})^-$C${KR['prod_exp']})")
+        tons = f"{area}*($C${KR['hma_dens']}*$C${KR['hma_in']}+$C${KR['agg_dens']}*$C${KR['agg_in']})"
+        mat = f"({tier_expr(tons)})/$C${KR['base_tier']}*$C${KR['bulk_mat']}+$C${KR['other_mat']}"
+        sc = f"({st}/$C${KR['base_stalls']})"
+        fixed = (f"($C${KR['fix_flat']}+$C${KR['fix_perim']}*{sc}^0.5+$C${KR['fix_area']}*{sc})"
+                 f"*$C${KR['loading']}/{st}")
+        c = K.cell(row=r, column=3 + j,
+                   value=f"=(({mob})+({prod})+({mat})+{pcol}${KR['pkg_delta']})*$C${KR['sf_stall']}"
+                         f"+$C${KR['discrete']}+{fixed}")
+        c.number_format = M0
+        c.font = BLACK
+        c.border = BOXB
+        if i == len(PKG) - 1 or j == 0:
+            c.fill = FILL_TOT if j == 0 else FILL_OUT
+    r += 1
+KR["h_last"] = r - 1
+K.cell(row=r, column=1, value="Read across for scale, down for specification. Specification moves the yard number three to five times as far as volume does; non-land fixed cost moves further than either.").font = NOTE
+r += 2
+
+r = section(K, r, "I.  WHAT DOES NOT SCALE, AND WHAT GETS WORSE", last_col="J")
+for t in [
+    "Stormwater treatment tracks impervious area almost exactly, and CT's industrial stormwater rules require a treatment train plus spill controls, not just detention. A bigger yard buys a bigger basin at the same unit cost. Pervious stall surfacing is the only real relief - which is a second, usually unmodelled, argument for the hybrid section.",
+    "Asphalt haul radius is a hard constraint, not a volume question. HMA has to be placed hot, so a plant more than about 45 minutes out raises cost at any project size. Confirm the nearest plant before trusting any $/ton quote in this model.",
+    "Yard lighting and stall electrical scale linearly with stall count. They are the per-stall discrete items and volume does nothing for them.",
+    "Bonding, builder's risk and construction management are percentages of hard cost, so they scale linearly by construction and never dilute.",
+    "Larger sites cross permitting thresholds - wider traffic study scope, more CT DEEP attention, longer entitlement. Schedule risk rises with size even as cost per stall falls.",
+    "Phasing REVERSES the mobilisation economy. Each phase re-mobilises every trade. Phase for capital or lease-up reasons, never expecting a construction saving.",
+]:
+    c = K.cell(row=r, column=1, value="- " + t)
+    c.font = Font(name=F, size=9)
+    c.alignment = Alignment(wrap_text=True, vertical="top")
+    K.merge_cells(start_row=r, start_column=1, end_row=r, end_column=10)
+    K.row_dimensions[r] = K.row_dimensions[r]
+    K.row_dimensions[r].height = 40
+    r += 1
+
+
 for ws in wb.worksheets:
     ws.freeze_panes = "A5"
 wb["ProForma_10yr"].freeze_panes = "C5"
 wb["Sensitivity"].freeze_panes = "C5"
 wb["Scale_Density"].freeze_panes = "C5"
+wb["Construction_Scale"].freeze_panes = "A5"
 wb.move_sheet("Sources_Notes", offset=0)
 
 # LibreOffice is unavailable in this environment, so no cached values can be baked in.
