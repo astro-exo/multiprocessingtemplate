@@ -12,6 +12,8 @@ Capex (fixed and variable) → cost per stall → NOI → DSCR.
 | `deal_box.py` | Lever sweeps: rate × land price, density, site scale, and the bracketed viable case. |
 | `verify_workbook.py` | Evaluates every formula in the workbook and diffs the Summary tab against `verify.py`. Exits non-zero on any Excel error or mismatch. |
 | `construction_scale.py` | Economies of scale in yard construction: cost-behaviour decomposition, the scale curve, specification levers and non-land fixed-cost scaling. |
+| `brief.html` | Two-page visual brief — the whole analysis condensed to six charts and four tables, laid out on fixed US Letter pages. |
+| `Bloomfield_Truck_Parking_Brief.pdf` | The brief rendered to print-ready PDF (2 pages, Letter). Regenerate with the Playwright script in `report.html`'s workflow, or print `brief.html` from a browser. |
 
 Rebuild with `python3 build_model.py`, then check it with `python3 verify_workbook.py`.
 

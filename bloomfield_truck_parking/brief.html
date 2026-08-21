@@ -1,0 +1,530 @@
+<title>Bloomfield Truck Parking Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+  --paper:#E9EAE5; --sheet:#FFFFFF; --panel:#F5F6F2;
+  --ink:#14181B; --ink-2:#3C4347; --muted:#5B625F;
+  --rule:#D8DBD2; --rule-2:#B4B9B0;
+  --accent:#1D4E6B; --accent-soft:#E4EDF2;
+  --s1:#1f6fb2; --s2:#d1601f; --s3:#1a8f66;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --t-good:rgba(12,163,12,.13); --t-warn:rgba(250,178,25,.20); --t-crit:rgba(208,59,59,.13);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#0E1113; --sheet:#181C1F; --panel:#14181B;
+    --ink:#E9EBE7; --ink-2:#C3C9C5; --muted:#98A19D;
+    --rule:#2C3237; --rule-2:#414950;
+    --accent:#7FB8D8; --accent-soft:#16303D;
+    --s1:#3f8ecf; --s2:#dd7433; --s3:#2aa87a;
+    --t-good:rgba(12,163,12,.20); --t-warn:rgba(250,178,25,.17); --t-crit:rgba(208,59,59,.20);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#0E1113; --sheet:#181C1F; --panel:#14181B;
+  --ink:#E9EBE7; --ink-2:#C3C9C5; --muted:#98A19D;
+  --rule:#2C3237; --rule-2:#414950;
+  --accent:#7FB8D8; --accent-soft:#16303D;
+  --s1:#3f8ecf; --s2:#dd7433; --s3:#2aa87a;
+  --t-good:rgba(12,163,12,.20); --t-warn:rgba(250,178,25,.17); --t-crit:rgba(208,59,59,.20);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif; -webkit-font-smoothing:antialiased}
+.stack{display:flex; flex-direction:column; align-items:center; gap:26px; padding:26px 16px 60px}
+.page{
+  width:8.5in; min-height:11in; background:var(--sheet); position:relative;
+  padding:0.46in 0.5in 0.42in; box-shadow:0 2px 14px rgba(0,0,0,.13);
+  display:flex; flex-direction:column;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .page{box-shadow:0 2px 14px rgba(0,0,0,.5)}}
+:root[data-theme="dark"] .page{box-shadow:0 2px 14px rgba(0,0,0,.5)}
+
+/* ---------- masthead ---------- */
+.mast{display:flex; justify-content:space-between; align-items:flex-end; gap:16px;
+  border-bottom:2px solid var(--ink); padding-bottom:9px; margin-bottom:4px}
+.mast h1{font-family:Archivo,Arial,sans-serif; font-weight:700; font-size:26px;
+  letter-spacing:-.021em; margin:0; line-height:1.05}
+.mast .sub{font-family:"IBM Plex Mono",monospace; font-size:9px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); margin-top:4px}
+.mast .meta{font-family:"IBM Plex Mono",monospace; font-size:9px; letter-spacing:.06em;
+  color:var(--muted); text-align:right; line-height:1.7; white-space:nowrap}
+.pagenum{position:absolute; bottom:0.2in; right:0.5in;
+  font-family:"IBM Plex Mono",monospace; font-size:9px; color:var(--muted); letter-spacing:.1em}
+.foot{position:absolute; bottom:0.2in; left:0.5in;
+  font-family:"IBM Plex Mono",monospace; font-size:8.5px; color:var(--muted); letter-spacing:.05em}
+
+/* ---------- structure ---------- */
+h2{font-family:Archivo,Arial,sans-serif; font-weight:600; font-size:9.5px; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--accent); margin:11px 0 6px;
+  padding-bottom:4px; border-bottom:1px solid var(--rule)}
+h2:first-of-type{margin-top:11px}
+p{margin:0 0 7px; font-size:11px; line-height:1.5; color:var(--ink-2)}
+.lead{font-size:12.5px; line-height:1.48; color:var(--ink)}
+.lead b{font-weight:600; color:var(--ink)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.spacer{flex:1}
+
+/* ---------- verdict banner ---------- */
+.verdict{display:grid; grid-template-columns:1fr auto; gap:18px; align-items:center;
+  border:1px solid var(--rule-2); border-left:4px solid var(--crit);
+  background:var(--panel); padding:11px 14px; margin-top:10px}
+.verdict .big{font-family:Archivo,Arial,sans-serif; font-weight:700; font-size:16px;
+  line-height:1.25; letter-spacing:-.015em; margin:0 0 4px; color:var(--ink)}
+.verdict p{margin:0; font-size:10.5px; line-height:1.45}
+.vnum{font-family:Archivo,Arial,sans-serif; font-weight:700; font-size:38px; line-height:1;
+  color:var(--crit); letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.vnum small{display:block; font-family:"IBM Plex Mono",monospace; font-size:8px; font-weight:400;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:5px}
+
+/* ---------- stat tiles ---------- */
+.tile{border:1px solid var(--rule); background:var(--panel); padding:8px 10px}
+.tile dt{font-family:"IBM Plex Mono",monospace; font-size:8px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 3px}
+.tile dd{margin:0; font-family:Archivo,Arial,sans-serif; font-weight:700; font-size:19px;
+  letter-spacing:-.02em; font-variant-numeric:tabular-nums; line-height:1.1}
+.tile .cap{font-family:"IBM Plex Mono",monospace; font-size:8.5px; color:var(--muted);
+  font-weight:400; margin-top:3px; letter-spacing:.02em}
+.bad{color:var(--crit)} .ok{color:var(--good)}
+
+/* ---------- figures ---------- */
+figure{margin:0}
+figcaption{font-family:"IBM Plex Mono",monospace; font-size:8.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:5px;
+  display:flex; justify-content:space-between; gap:8px}
+figcaption b{color:var(--ink); font-weight:600}
+.note{font-size:9.5px; line-height:1.42; color:var(--muted); margin:4px 0 0}
+svg{display:block; width:100%; height:auto; overflow:visible}
+svg text{font-family:"IBM Plex Mono",monospace; fill:var(--muted); font-size:8.5px}
+svg .val{fill:var(--ink); font-weight:600; font-size:9px}
+svg .rowlab{fill:var(--ink); font-size:9px}
+svg .axis{stroke:var(--rule-2); stroke-width:.8}
+svg .grid{stroke:var(--rule); stroke-width:.8; stroke-dasharray:2 3}
+.legend{display:flex; flex-wrap:wrap; gap:12px; margin-top:5px;
+  font-family:"IBM Plex Mono",monospace; font-size:8.5px; color:var(--ink-2)}
+.legend span{display:inline-flex; align-items:center; gap:5px}
+.sw{width:9px; height:9px; border-radius:1px; display:inline-block}
+.sw.dash{width:14px; height:0; border-top:1.6px dashed var(--ink-2); border-radius:0}
+
+/* ---------- tables ---------- */
+table{border-collapse:collapse; width:100%;
+  font-family:"IBM Plex Mono",monospace; font-size:9px; font-variant-numeric:tabular-nums}
+th,td{padding:3px 6px; text-align:right; border-bottom:1px solid var(--rule); white-space:nowrap}
+th:first-child,td:first-child{text-align:left; white-space:normal}
+thead th{font-size:7.8px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted);
+  font-weight:600; border-bottom:1px solid var(--rule-2)}
+tr.tot td{font-weight:600; background:var(--panel)}
+tr.key td{font-weight:600; background:var(--accent-soft)}
+.heat td{text-align:center; border:1px solid var(--sheet); font-weight:500; padding:3.5px 4px}
+.heat td:first-child{text-align:right; font-weight:600; background:var(--panel); border-color:var(--rule)}
+.g{background:var(--t-good)} .w{background:var(--t-warn)} .c{background:var(--t-crit)}
+.bands{display:flex; gap:11px; margin-top:5px;
+  font-family:"IBM Plex Mono",monospace; font-size:8.5px; color:var(--ink-2)}
+.bands i{width:10px; height:10px; border:1px solid var(--rule); display:inline-block;
+  font-style:normal; margin-right:4px; vertical-align:-1px}
+
+/* ---------- recommendation ---------- */
+.rec{border:1px solid var(--rule-2); background:var(--panel); padding:10px 13px; margin-top:9px}
+.rec .k{font-family:"IBM Plex Mono",monospace; font-size:8px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:5px}
+.rec .big{font-family:Archivo,Arial,sans-serif; font-weight:700; font-size:14px;
+  line-height:1.25; margin:0 0 6px; letter-spacing:-.012em; color:var(--ink)}
+.rec ol{margin:0; padding-left:15px; font-size:10.2px; line-height:1.44; color:var(--ink-2)}
+.rec li{margin-bottom:3px}
+.rec b{color:var(--ink); font-weight:600}
+
+/* ---------- print ---------- */
+@media print{
+  body{background:#fff}
+  .stack{padding:0; gap:0; display:block}
+  .page{box-shadow:none; margin:0; width:auto; min-height:auto; height:11in;
+    padding:0.46in 0.5in 0.42in; page-break-after:always; break-after:page}
+  .page:last-child{page-break-after:auto; break-after:auto}
+}
+@page{size:Letter; margin:0}
+</style>
+
+<div class="stack">
+
+<!-- ============================ PAGE 1 ============================ -->
+<div class="page">
+  <div class="mast">
+    <div>
+      <h1>Bloomfield Truck Parking</h1>
+      <div class="sub">Development feasibility &middot; capex &rarr; cost per stall &rarr; NOI &rarr; DSCR</div>
+    </div>
+    <div class="meta">Bloomfield, CT &middot; IOS truck parking<br>
+      Test 1.25&times; DSCR at 65% LTC &middot; Aug 2026</div>
+  </div>
+
+  <div class="verdict">
+    <div>
+      <p class="big">None of the three build scenarios can be financed.</p>
+      <p>The best covers 0.77&times; against a 1.25&times; test. This is not a marginal miss and not one
+      pessimistic input &mdash; it holds across every reasonable flex of the assumptions.</p>
+    </div>
+    <div class="vnum">0.77&times;<small>best-case DSCR</small></div>
+  </div>
+
+  <h2>Scenarios</h2>
+  <div class="grid3">
+    <div class="tile"><dt>S1 &middot; Full asphalt, staffed</dt>
+      <dd>$43,283</dd><div class="cap">10 ac &middot; 216 stalls &middot; 0.48&times;</div></div>
+    <div class="tile"><dt>S2 &middot; Value-engineered</dt>
+      <dd>$34,882</dd><div class="cap">10 ac &middot; 216 stalls &middot; 0.77&times;</div></div>
+    <div class="tile"><dt>S3 &middot; Retrofit paved yard</dt>
+      <dd>$36,061</dd><div class="cap">8 ac &middot; 187 stalls &middot; 0.73&times;</div></div>
+  </div>
+
+  <h2>Cost per stall against what the income can carry</h2>
+  <figure>
+    <figcaption><b>Fixed vs. variable capex</b><span>Dashed = ceiling at 1.25&times; DSCR</span></figcaption>
+    <div id="cA"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--s1)"></i>Fixed capex</span>
+      <span><i class="sw" style="background:var(--s2)"></i>Variable capex</span>
+      <span><i class="sw dash"></i>Maximum supportable</span>
+    </div>
+    <p class="note">Fixed site costs are 56&ndash;81% of capital cost in every scenario. Every bar
+    overshoots its own financeable ceiling by 1.6&ndash;2.6&times;.</p>
+  </figure>
+
+  <h2>The single ratio that decides it</h2>
+  <figure>
+    <figcaption><b>All-in cost per stall &divide; NOI per stall</b><span>Must clear 14.2&times;</span></figcaption>
+    <div id="cB"></div>
+    <p class="note">A 1.25&times; DSCR at 65% LTC and an 8.674% mortgage constant requires a 7.05% yield
+    on cost &mdash; so cost per stall can be no more than about 14.2&times; NOI per stall.</p>
+  </figure>
+
+  <div class="grid2" style="margin-top:13px">
+    <figure>
+      <figcaption><b>Where the capital goes</b><span>S2 &middot; $7.53M</span></figcaption>
+      <div id="cC"></div>
+    </figure>
+    <div>
+      <h2 style="margin-top:0">Stabilized operations &middot; S2</h2>
+      <table>
+        <tbody>
+          <tr><td>Effective gross income</td><td>$801,405</td></tr>
+          <tr><td>Operating expenses</td><td>($472,611)</td></tr>
+          <tr class="tot"><td>Net operating income</td><td>$328,793</td></tr>
+          <tr><td>Blended revenue / stall / mo</td><td>$309</td></tr>
+          <tr><td>Opex / stall / mo</td><td>$182</td></tr>
+          <tr class="key"><td>Margin / stall / mo</td><td>$127</td></tr>
+          <tr><td>Yield on cost</td><td>4.36%</td></tr>
+          <tr><td>Debt yield</td><td>6.7%</td></tr>
+          <tr><td>Break-even occupancy</td><td>112.7%</td></tr>
+        </tbody>
+      </table>
+      <p class="note">$127 per stall per month has to carry $34,882 of capital. A break-even
+      occupancy above 100% means full occupancy still does not cover debt service.</p>
+    </div>
+  </div>
+
+  <h2>What each scenario would need to be financeable</h2>
+  <table>
+    <thead><tr><th></th><th>Modelled rate</th><th>Required rate</th><th>Gap</th>
+      <th>Max cost / stall</th><th>Max land $/ac</th><th>Break-even occ.</th></tr></thead>
+    <tbody>
+      <tr><td>S1 &middot; full asphalt, staffed</td><td>$353</td><td>$520</td>
+        <td>+47.5%</td><td>$16,448</td><td>($392,162)</td><td>132.2%</td></tr>
+      <tr><td>S2 &middot; value-engineered</td><td>$309</td><td>$392</td>
+        <td>+26.7%</td><td>$21,599</td><td>($105,726)</td><td>112.7%</td></tr>
+      <tr><td>S3 &middot; retrofit paved yard</td><td>$322</td><td>$414</td>
+        <td>+28.9%</td><td>$21,100</td><td>$42,818</td><td>115.0%</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Rates are blended revenue per stall per month. A negative maximum land price means
+  the improvements alone cost more than the income can carry, so no land basis rescues those two.
+  Only the retrofit leaves residual land value &mdash; $42,818/acre against the $385,000/acre assumed.</p>
+
+  <div class="spacer"></div>
+  <div class="foot">Source: Bloomfield_Truck_Parking_Model.xlsx &mdash; 12 tabs, ~1,500 live formulas</div>
+  <div class="pagenum">1 / 2</div>
+</div>
+
+<!-- ============================ PAGE 2 ============================ -->
+<div class="page">
+  <div class="mast">
+    <div>
+      <h1>What moves the number</h1>
+      <div class="sub">Scale &middot; specification &middot; the financeable envelope</div>
+    </div>
+    <div class="meta">Page 2 of 2<br>Excludes land except where stated</div>
+  </div>
+
+  <h2>Scale is the strongest lever &mdash; but only above ~14 acres</h2>
+  <figure>
+    <figcaption><b>Cost per stall and coverage against site size</b><span>$350/mo, $120k/ac land</span></figcaption>
+    <div id="cD"></div>
+    <p class="note">Fixed site costs spread across more stalls. The crossover through 1.25&times;
+    happens between 10 and 14 acres; below 8 acres nothing else can rescue the deal.</p>
+  </figure>
+
+  <div class="grid2" style="margin-top:12px">
+    <figure>
+      <figcaption><b>Why volume buys so little</b><span>Yard construction, $/SF</span></figcaption>
+      <div id="cE"></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--s1)"></i>Mobilisation</span>
+        <span><i class="sw" style="background:var(--s2)"></i>Production</span>
+        <span><i class="sw" style="background:var(--s3)"></i>Material</span>
+      </div>
+      <p class="note">Material is 56% of the section and the base case already sits in the best
+      volume tier. Tripling the yard from 7 to 20 acres takes just <b>4.9%</b> off construction
+      cost per stall.</p>
+    </figure>
+    <figure>
+      <figcaption><b>The financeable envelope</b><span>DSCR &middot; rate &times; land basis</span></figcaption>
+      <table class="heat">
+        <thead><tr><th>$/mo</th><th>$0</th><th>$40k</th><th>$80k</th><th>$120k</th><th>$160k</th><th>$200k</th></tr></thead>
+        <tbody>
+          <tr><td>$300</td><td class="w">1.06</td><td class="c">0.96</td><td class="c">0.87</td><td class="c">0.79</td><td class="c">0.72</td><td class="c">0.65</td></tr>
+          <tr><td>$325</td><td class="g">1.26</td><td class="w">1.14</td><td class="w">1.03</td><td class="c">0.94</td><td class="c">0.86</td><td class="c">0.79</td></tr>
+          <tr><td>$350</td><td class="g">1.45</td><td class="g">1.31</td><td class="w">1.20</td><td class="w">1.10</td><td class="w">1.01</td><td class="c">0.93</td></tr>
+          <tr><td>$375</td><td class="g">1.64</td><td class="g">1.49</td><td class="g">1.37</td><td class="g">1.25</td><td class="w">1.16</td><td class="w">1.07</td></tr>
+          <tr><td>$400</td><td class="g">1.83</td><td class="g">1.67</td><td class="g">1.53</td><td class="g">1.41</td><td class="g">1.30</td><td class="w">1.21</td></tr>
+          <tr><td>$425</td><td class="g">2.02</td><td class="g">1.85</td><td class="g">1.70</td><td class="g">1.56</td><td class="g">1.45</td><td class="g">1.34</td></tr>
+        </tbody>
+      </table>
+      <div class="bands">
+        <span><i class="g"></i>&ge;1.25&times;</span><span><i class="w"></i>1.00&ndash;1.24&times;</span>
+        <span><i class="c"></i>&lt;1.00&times;</span>
+      </div>
+      <p class="note">At the modelled $315/month <b>no land price clears the test &mdash; not even
+      free land</b>. Rate has to move first on a 10-acre programme.</p>
+    </figure>
+  </div>
+
+  <h2>Specification &mdash; what a design decision is worth per stall</h2>
+  <figure>
+    <figcaption><b>Levers ranked by impact</b><span>Against the base heavy-duty section</span></figcaption>
+    <div id="cF"></div>
+    <p class="note">One lever is worth more than all the others combined. Stacked, the compatible
+    levers take yard construction from $13,702 to $8,812 per stall &mdash; a 35.7% cut, three to five
+    times what volume delivers.</p>
+  </figure>
+
+  <div class="rec">
+    <div class="k">Recommendation</div>
+    <p class="big">Do not pursue a 10-acre greenfield build at $175,000 per acre.</p>
+    <ol>
+      <li><b>Specify the hybrid section first.</b> Paved aisles with compacted millings stalls is
+      worth $3,988 per stall, costs nothing but a design decision, and shrinks the stormwater basin
+      as a side effect.</li>
+      <li><b>Then buy site size.</b> 14+ acres at or below $120k/acre yielding 25+ stalls per gross
+      acre is the only configuration that clears a lender's test on its own economics
+      &mdash; 1.67&times; DSCR at 9.43% yield on cost.</li>
+      <li><b>Spend the first two dollars on diligence, not land.</b> A rate survey of secured 53&nbsp;ft
+      stalls within 15 miles, and a zoning pre-application meeting with Bloomfield TPZ. Both are
+      cheap and either can kill the deal before land is optioned.</li>
+    </ol>
+    <p class="note" style="margin-top:7px">Two caveats sit outside the model. The $315&ndash;340/month
+    rate is inferred from the national $150&ndash;500 band, not an observed Bloomfield comp. And
+    Bloomfield TPZ has treated outdoor storage as a use not permitted as a principal use &mdash;
+    a text amendment or variance is likely required, not just site-plan approval.</p>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="foot">Rate and land assumptions are inferences from regional bands, not observed Bloomfield transactions</div>
+  <div class="pagenum">2 / 2</div>
+</div>
+
+</div>
+
+<script>
+(function(){
+  var NS="http://www.w3.org/2000/svg";
+  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a){if(a[k]!=null)e.setAttribute(k,a[k]);}return e;}
+  function put(id,svg){var h=document.getElementById(id); if(h) h.appendChild(svg);}
+  function money(v){return "$"+Math.round(v).toLocaleString("en-US");}
+
+  /* ---- A. cost per stall, fixed vs variable, with ceiling ---- */
+  (function(){
+    var d=[{k:"S1",f:24160,v:19123,m:16448},{k:"S2",f:21813,v:13069,m:21599},{k:"S3",f:29232,v:6829,m:21100}];
+    var W=700,H=126,padL=26,padR=92,padT=14,padB=20,rowH=30;
+    var max=46000, x=function(v){return padL+v/max*(W-padL-padR);};
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"All-in cost per stall for the three scenarios, split into fixed and variable capex, each against its own financeable ceiling."});
+    [0,10000,20000,30000,40000].forEach(function(v){
+      s.appendChild(el("line",{x1:x(v),x2:x(v),y1:padT-5,y2:H-padB+2,class:v===0?"axis":"grid"}));
+      var t=el("text",{x:x(v),y:H-padB+12,"text-anchor":"middle"});
+      t.textContent=v?"$"+v/1000+"k":"$0"; s.appendChild(t);
+    });
+    d.forEach(function(o,i){
+      var y=padT+i*rowH, bh=17, by=y+2;
+      var lb=el("text",{x:0,y:by+bh/2+3,class:"rowlab"}); lb.textContent=o.k; s.appendChild(lb);
+      s.appendChild(el("rect",{x:padL,y:by,width:x(o.f)-padL,height:bh,fill:"var(--s1)"}));
+      s.appendChild(el("rect",{x:x(o.f)+1.5,y:by,width:x(o.v)-padL-1.5,height:bh,fill:"var(--s2)"}));
+      var tot=o.f+o.v;
+      var tl=el("text",{x:x(tot)+7,y:by+bh/2+3,class:"val"}); tl.textContent=money(tot); s.appendChild(tl);
+      var ov=el("text",{x:x(tot)+64,y:by+bh/2+3,"font-size":"8"});
+      ov.textContent=(tot/o.m).toFixed(1)+"×"; s.appendChild(ov);
+      s.appendChild(el("line",{x1:x(o.m),x2:x(o.m),y1:by-4,y2:by+bh+4,
+        stroke:"var(--ink-2)","stroke-width":1.6,"stroke-dasharray":"3 2.5"}));
+    });
+    put("cA",s);
+  })();
+
+  /* ---- B. cost:NOI ratio vs 14.2x threshold ---- */
+  (function(){
+    var d=[{k:"S1 · full asphalt",v:37.3},{k:"S2 · value-engineered",v:22.9},{k:"S3 · retrofit",v:24.3}];
+    var W=700,H=104,padL=118,padR=86,padT=12,padB=20,rowH=24,thr=14.2;
+    var max=40, x=function(v){return padL+v/max*(W-padL-padR);};
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Cost per stall divided by NOI per stall: 37.3, 22.9 and 24.3 times against a 14.2 times threshold."});
+    [0,10,20,30,40].forEach(function(v){
+      s.appendChild(el("line",{x1:x(v),x2:x(v),y1:padT-4,y2:H-padB+2,class:v===0?"axis":"grid"}));
+      var t=el("text",{x:x(v),y:H-padB+12,"text-anchor":"middle"}); t.textContent=v+"×"; s.appendChild(t);
+    });
+    /* financeable zone */
+    s.appendChild(el("rect",{x:x(0),y:padT-4,width:x(thr)-x(0),height:H-padB-padT+6,
+      fill:"var(--t-good)"}));
+    s.appendChild(el("line",{x1:x(thr),x2:x(thr),y1:padT-8,y2:H-padB+2,
+      stroke:"var(--good)","stroke-width":1.6}));
+    var tt=el("text",{x:x(thr),y:padT-11,"text-anchor":"middle","font-size":"8"});
+    tt.setAttribute("fill","var(--good)"); tt.textContent="14.2× financeable"; s.appendChild(tt);
+    d.forEach(function(o,i){
+      var y=padT+i*rowH, bh=13, by=y+3;
+      var lb=el("text",{x:padL-8,y:by+bh/2+3,class:"rowlab","text-anchor":"end"});
+      lb.textContent=o.k; s.appendChild(lb);
+      s.appendChild(el("rect",{x:padL,y:by,width:x(o.v)-padL,height:bh,fill:"var(--crit)"}));
+      var tl=el("text",{x:x(o.v)+7,y:by+bh/2+3,class:"val"});
+      tl.textContent=o.v.toFixed(1)+"×"; s.appendChild(tl);
+      var gp=el("text",{x:x(o.v)+42,y:by+bh/2+3,"font-size":"8"});
+      gp.textContent=(o.v/thr).toFixed(1)+"× over"; s.appendChild(gp);
+    });
+    put("cB",s);
+  })();
+
+  /* ---- C. capital stack, ranked ---- */
+  (function(){
+    var d=[["Yard construction",2400408],["Land + closing",1788500],["Site infrastructure",1517280],
+           ["Contingency",493629],["Pre-development",445000],["Financing & carry",372485],
+           ["Lease-up reserve",321306],["Soft loadings",195884]];
+    var W=340,H=142,padL=118,padR=52,padT=5,padB=15,rowH=15;
+    var max=2500000, x=function(v){return padL+v/max*(W-padL-padR);};
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"The 7.53 million dollar capital stack for scenario 2, ranked: yard construction 2.40M, land 1.79M, site infrastructure 1.52M, then contingency, pre-development, financing, lease-up reserve and soft loadings."});
+    [0,1000000,2000000].forEach(function(v){
+      s.appendChild(el("line",{x1:x(v),x2:x(v),y1:padT-3,y2:H-padB+2,class:v===0?"axis":"grid"}));
+      var t=el("text",{x:x(v),y:H-padB+11,"text-anchor":"middle","font-size":"8"});
+      t.textContent=v?"$"+v/1000000+"M":"$0"; s.appendChild(t);
+    });
+    d.forEach(function(o,i){
+      var y=padT+i*rowH, bh=10, by=y+2;
+      var lb=el("text",{x:padL-7,y:by+bh/2+3,"text-anchor":"end","font-size":"8.5"});
+      lb.setAttribute("fill","var(--ink)"); lb.textContent=o[0]; s.appendChild(lb);
+      s.appendChild(el("rect",{x:padL,y:by,width:Math.max(x(o[1])-padL,1),height:bh,
+        fill:i<3?"var(--s1)":"var(--accent)","fill-opacity":i<3?1:.42}));
+      var tl=el("text",{x:x(o[1])+6,y:by+bh/2+3,"font-size":"8.5"});
+      tl.setAttribute("fill","var(--ink)");
+      tl.textContent="$"+(o[1]/1000000).toFixed(2)+"M"; s.appendChild(tl);
+    });
+    put("cC",s);
+  })();
+
+  /* ---- D. scale: cost/stall + DSCR, stacked panels sharing x ---- */
+  (function(){
+    var ac=[4,6,8,10,14,20,30],
+        cost=[48969,39664,34870,32091,28891,26441,24532],
+        dscr=[0.48,0.76,0.96,1.10,1.29,1.48,1.65];
+    var W=700,padL=48,padR=22,padT=13,padB=28,pH=58,gap=20;
+    var H=padT+pH+gap+pH+padB;
+    var x=function(a){return padL+(a-4)/26*(W-padL-padR);};
+    var y1=function(v){return padT+pH-(v-22000)/28000*pH;};
+    var t2=padT+pH+gap;
+    var y2=function(v){return t2+pH-(v-0.4)/1.4*pH;};
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Two panels sharing a gross-acres axis: all-in cost per stall falls from 48,969 dollars at 4 acres to 24,532 at 30 acres, while DSCR rises from 0.48 to 1.65 times, crossing the 1.25 test between 10 and 14 acres."});
+    function panel(title,yf,ticks,fmt,color,vals){
+      var t=el("text",{x:padL,y:yf(ticks[ticks.length-1])-7,"font-size":"8.5"});
+      t.setAttribute("fill","var(--ink)"); t.setAttribute("font-weight","600");
+      t.textContent=title; s.appendChild(t);
+      ticks.forEach(function(v){
+        s.appendChild(el("line",{x1:padL,x2:W-padR,y1:yf(v),y2:yf(v),class:"grid"}));
+        var l=el("text",{x:padL-6,y:yf(v)+3,"text-anchor":"end"}); l.textContent=fmt(v); s.appendChild(l);
+      });
+      var dd=""; vals.forEach(function(v,i){dd+=(i?"L":"M")+x(ac[i]).toFixed(1)+" "+yf(v).toFixed(1)+" ";});
+      s.appendChild(el("path",{d:dd,fill:"none",stroke:color,"stroke-width":1.8,
+        "stroke-linejoin":"round","stroke-linecap":"round"}));
+      vals.forEach(function(v,i){
+        s.appendChild(el("circle",{cx:x(ac[i]),cy:yf(v),r:3,fill:color,
+          stroke:"var(--sheet)","stroke-width":1.4}));
+      });
+    }
+    panel("All-in cost per stall",y1,[24000,32000,40000,48000],function(v){return "$"+v/1000+"k";},"var(--s1)",cost);
+    panel("DSCR at 65% LTC",y2,[0.5,1.0,1.5],function(v){return v.toFixed(2)+"×";},"var(--s2)",dscr);
+    s.appendChild(el("line",{x1:padL,x2:W-padR,y1:y2(1.25),y2:y2(1.25),
+      stroke:"var(--good)","stroke-width":1.4,"stroke-dasharray":"3 2.5"}));
+    var rt=el("text",{x:W-padR,y:y2(1.25)+11,"font-size":"8","text-anchor":"end"});
+    rt.setAttribute("fill","var(--good)"); rt.textContent="1.25× lender test"; s.appendChild(rt);
+    s.appendChild(el("line",{x1:padL,x2:W-padR,y1:t2+pH,y2:t2+pH,class:"axis"}));
+    ac.forEach(function(a){
+      var l=el("text",{x:x(a),y:t2+pH+12,"text-anchor":"middle"}); l.textContent=a; s.appendChild(l);
+    });
+    var xl=el("text",{x:(padL+W-padR)/2,y:H-1,"text-anchor":"middle","font-size":"7.5"});
+    xl.setAttribute("letter-spacing",".1em"); xl.textContent="GROSS ACRES"; s.appendChild(xl);
+    put("cD",s);
+  })();
+
+  /* ---- E. cost behaviour, one 100% stacked bar ---- */
+  (function(){
+    var segs=[["Mobilisation",0.31,"var(--s1)"],["Production",3.88,"var(--s2)"],["Material",5.26,"var(--s3)"]];
+    var W=340,H=56,padL=0,padR=0,barY=16,bh=26,tot=9.45;
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Yard construction of 9.45 dollars per square foot splits into 3.3 percent mobilisation, 41.1 percent production and 55.7 percent material."});
+    var run=0;
+    segs.forEach(function(sg){
+      var w=sg[1]/tot*W, xx=run/tot*W;
+      s.appendChild(el("rect",{x:xx+(run>0?1:0),y:barY,width:Math.max(w-(run>0?1:0),1),height:bh,fill:sg[2]}));
+      var pc=sg[1]/tot;
+      if(pc>0.10){
+        var t=el("text",{x:xx+w/2,y:barY+bh/2+3.5,"text-anchor":"middle","font-size":"9","font-weight":"600"});
+        t.setAttribute("fill","#fff"); t.textContent=(pc*100).toFixed(1)+"%"; s.appendChild(t);
+      } else {
+        var t2=el("text",{x:xx+w/2,y:barY-4,"text-anchor":"middle","font-size":"8"});
+        t2.textContent=(pc*100).toFixed(1)+"%"; s.appendChild(t2);
+      }
+      var v=el("text",{x:xx+w/2,y:barY+bh+11,"text-anchor":"middle","font-size":"8"});
+      v.textContent="$"+sg[1].toFixed(2); s.appendChild(v);
+      run+=sg[1];
+    });
+    put("cE",s);
+  })();
+
+  /* ---- F. specification levers ---- */
+  (function(){
+    var d=[["Hybrid surface — millings stalls",-3988],["Thinner HMA, stall areas only",-863],
+           ["Balanced cut/fill",-652],["On-site crush & reuse of demo",-507],
+           ["25% RAP content in mix",-474],["Geogrid — base 12″ to 8″",-449],
+           ["Millings for lower 6″ of base",-294],["ADD concrete landing-gear pads",672]];
+    var W=700,padL=196,padR=70,padT=7,padB=16,rowH=17.5;
+    var H=padT+padB+d.length*rowH;
+    var lo=-4200,hi=900, x=function(v){return padL+(v-lo)/(hi-lo)*(W-padL-padR);};
+    var zero=x(0);
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Specification levers ranked: the hybrid millings surface saves 3,988 dollars per stall, several times any other lever; concrete landing-gear pads are a deliberate 672 dollar add."});
+    [-4000,-3000,-2000,-1000,0].forEach(function(v){
+      s.appendChild(el("line",{x1:x(v),x2:x(v),y1:padT-3,y2:H-padB+2,class:v===0?"axis":"grid"}));
+      var t=el("text",{x:x(v),y:H-padB+11,"text-anchor":"middle","font-size":"8"});
+      t.textContent=v?"−$"+Math.abs(v/1000)+"k":"$0"; s.appendChild(t);
+    });
+    d.forEach(function(o,i){
+      var y=padT+i*rowH, bh=12, by=y+2;
+      var lb=el("text",{x:padL-190,y:by+bh/2+3.5,"font-size":"8.5"});
+      lb.setAttribute("fill","var(--ink)"); lb.textContent=o[0]; s.appendChild(lb);
+      var x0=Math.min(zero,x(o[1])), w=Math.abs(x(o[1])-zero);
+      s.appendChild(el("rect",{x:x0,y:by,width:Math.max(w,1),height:bh,
+        fill:o[1]<0?"var(--s1)":"var(--warn)"}));
+      var tx=o[1]<0?zero+7:x0+w+7;
+      var tl=el("text",{x:tx,y:by+bh/2+3.5,class:"val"});
+      tl.textContent=(o[1]<0?"−$":"+$")+Math.abs(o[1]).toLocaleString(); s.appendChild(tl);
+    });
+    put("cF",s);
+  })();
+})();
+</script>
