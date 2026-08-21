@@ -10,9 +10,18 @@ Capex (fixed and variable) → cost per stall → NOI → DSCR.
 | `build_model.py` | Generates the workbook. Every input lives here, so the model is reproducible and diffable. |
 | `verify.py` | Independent pure-Python replication of the same math. Used to cross-check the spreadsheet and to source every number quoted below. |
 | `deal_box.py` | Lever sweeps: rate × land price, density, site scale, and the bracketed viable case. |
+| `verify_workbook.py` | Evaluates every formula in the workbook and diffs the Summary tab against `verify.py`. Exits non-zero on any Excel error or mismatch. |
 
-Rebuild with `python3 build_model.py`, then recalculate the formulas
-(`python3 <xlsx-skill>/scripts/recalc.py Bloomfield_Truck_Parking_Model.xlsx 1600`).
+Rebuild with `python3 build_model.py`, then check it with `python3 verify_workbook.py`.
+
+**On recalculation.** The workbook ships with formulas but no cached values, and is
+flagged `fullCalcOnLoad`, so Excel, LibreOffice or Sheets computes every cell the moment
+it opens. Values could not be baked in here because LibreOffice is non-functional in this
+container — it fails to recalculate even a four-formula test workbook — so the usual
+`recalc.py` route was unavailable. `verify_workbook.py` substitutes for it, evaluating all
+2,424 formula cells with the pure-Python `formulas` engine (`pip install formulas`). Latest
+run: **2,424 cells evaluated, zero formula errors, 69 Summary cells matched against the
+independent Python model with zero mismatches.**
 
 ## Scenarios
 

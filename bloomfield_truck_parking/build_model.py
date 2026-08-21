@@ -1568,6 +1568,10 @@ wb["Sensitivity"].freeze_panes = "C5"
 wb["Scale_Density"].freeze_panes = "C5"
 wb.move_sheet("Sources_Notes", offset=0)
 
+# LibreOffice is unavailable in this environment, so no cached values can be baked in.
+# Force a full recalculation the moment the file is opened, in Excel or anywhere else.
+wb.calculation.fullCalcOnLoad = True
+
 OUT = "/home/user/multiprocessingtemplate/bloomfield_truck_parking/Bloomfield_Truck_Parking_Model.xlsx"
 wb.save(OUT)
 print("saved", OUT)
