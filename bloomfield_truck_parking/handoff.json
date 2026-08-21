@@ -1,0 +1,474 @@
+{
+  "$schema_note": "Companion to HANDOFF.md. Grades: A primary source, B published secondary, C derivable arithmetic, D judgement, F invented (do not propagate).",
+  "subject": "Bloomfield, Connecticut - truck parking / industrial outdoor storage development",
+  "status": "feasibility analysis, self-audited, incomplete by design",
+  "basis_date": "2026-08",
+  "headline": {
+    "conclusion": "The deal as scoped does not work. The reason is solid. The recommended fix (buy scale) rests on an assumption since shown to be probably wrong.",
+    "strongest_finding": "Negative leverage - yield on cost 2.68-4.36% against a 7.25% debt rate in all scenarios.",
+    "weakest_link": "The highest-elasticity input (blended revenue per stall, |e|=1.67) is grade F.",
+    "probability_financeable_10_acres": 0.072,
+    "probability_positive_leverage_10_acres": 0.059,
+    "site_size_50pct_crossing_acres": 18
+  },
+  "reduced_model": {
+    "identity": "DSCR = [N(R-c)*12 - F] / [LTC*k*(N*v + PHI)]",
+    "validated_against_workbook": true,
+    "max_error": "2e-16",
+    "stalls": "N = A*43560*y/s",
+    "test_0_leverage_sign": "YoC vs interest rate; if YoC < rate, leverage is negative",
+    "test_1_marginal_unit": "m = (R-c)*12 - D*LTC*k*v ; if m <= 0 no scale ever works",
+    "test_2_scale_threshold": "N* = B/m where B = F + D*LTC*k*PHI",
+    "ceiling": "(R-c)*12 / (LTC*k*v)",
+    "inversion": "R* = c + [F + D*LTC*k*(N*v + PHI)] / (12N)"
+  },
+  "scenarios": {
+    "S1": {
+      "label": "greenfield, full-depth asphalt, staffed",
+      "identity_parameters": {
+        "N_stalls": 216,
+        "R_revenue_per_stall_month": 352.63,
+        "c_var_opex_per_stall_month": 99.16,
+        "F_fixed_opex_annual": 406635,
+        "v_var_capex_per_stall": 19123,
+        "PHI_fixed_capex": 5218590,
+        "k_mortgage_constant": 0.086737,
+        "LTC": 0.65
+      },
+      "outputs": {
+        "dscr_at_target_ltc": 0.475,
+        "yield_on_cost": 0.02678,
+        "total_cost": 9349120,
+        "noi": 250373,
+        "cost_per_stall": 43283,
+        "m_contribution_per_stall_yr": 1694,
+        "B_fixed_burden_annual": 774408,
+        "N_star_required": 457,
+        "dscr_ceiling_infinite_scale": 2.821,
+        "leverage_sign": "negative"
+      }
+    },
+    "S2": {
+      "label": "greenfield, value-engineered, unmanned",
+      "identity_parameters": {
+        "N_stalls": 216,
+        "R_revenue_per_stall_month": 309.18,
+        "c_var_opex_per_stall_month": 95.2,
+        "F_fixed_opex_annual": 225844,
+        "v_var_capex_per_stall": 13069,
+        "PHI_fixed_capex": 4711612,
+        "k_mortgage_constant": 0.086737,
+        "LTC": 0.65
+      },
+      "outputs": {
+        "dscr_at_target_ltc": 0.774,
+        "yield_on_cost": 0.04364,
+        "total_cost": 7534492,
+        "noi": 328793,
+        "cost_per_stall": 34882,
+        "m_contribution_per_stall_yr": 1647,
+        "B_fixed_burden_annual": 557889,
+        "N_star_required": 339,
+        "dscr_ceiling_infinite_scale": 3.485,
+        "leverage_sign": "negative"
+      }
+    },
+    "S3": {
+      "label": "retrofit of an existing paved yard",
+      "identity_parameters": {
+        "N_stalls": 187,
+        "R_revenue_per_stall_month": 321.55,
+        "c_var_opex_per_stall_month": 95.44,
+        "F_fixed_opex_annual": 229327,
+        "v_var_capex_per_stall": 6829,
+        "PHI_fixed_capex": 5466396,
+        "k_mortgage_constant": 0.086737,
+        "LTC": 0.65
+      },
+      "outputs": {
+        "dscr_at_target_ltc": 0.7314,
+        "yield_on_cost": 0.04124,
+        "total_cost": 6743422,
+        "noi": 278071,
+        "cost_per_stall": 36061,
+        "m_contribution_per_stall_yr": 2232,
+        "B_fixed_burden_annual": 614564,
+        "N_star_required": 275,
+        "dscr_ceiling_infinite_scale": 7.047,
+        "leverage_sign": "negative"
+      }
+    }
+  },
+  "parameter_register": [
+    {
+      "name": "blended_revenue_per_stall_month",
+      "value": 309,
+      "grade": "F",
+      "abs_elasticity_dscr": 1.67,
+      "provenance": "Inferred from a national $150-500 band. No verifiable Hartford comp for a secured 53ft stall."
+    },
+    {
+      "name": "stabilized_occupancy",
+      "value": 0.88,
+      "grade": "D",
+      "abs_elasticity_dscr": 1.67,
+      "provenance": "Contradicts own cited source (70% typical stabilization target)."
+    },
+    {
+      "name": "paved_sf_per_stall",
+      "value": 1450,
+      "grade": "C",
+      "abs_elasticity_dscr": 1.59,
+      "provenance": "12ft x 75ft stall + half a 75ft back-in aisle + 100 SF cross-lanes. Arithmetic checkable; layout unverified."
+    },
+    {
+      "name": "net_yard_efficiency",
+      "value": 0.72,
+      "grade": "D",
+      "abs_elasticity_dscr": 1.0,
+      "provenance": "No site plan behind it. Parcel-specific in reality."
+    },
+    {
+      "name": "loan_to_cost",
+      "value": 0.65,
+      "grade": "B",
+      "abs_elasticity_dscr": 1.0,
+      "provenance": "Market standard for the asset class."
+    },
+    {
+      "name": "monthly_transient_mix",
+      "value": 0.8,
+      "grade": "D",
+      "abs_elasticity_dscr": 0.87,
+      "provenance": "Judgement about an off-highway location. Untested."
+    },
+    {
+      "name": "permanent_loan_rate",
+      "value": 0.0725,
+      "grade": "B",
+      "abs_elasticity_dscr": 0.65,
+      "provenance": "2026 quotes start ~5.74%; niche collateral prices wider."
+    },
+    {
+      "name": "transient_rate_and_utilisation",
+      "value": [
+        24,
+        0.58
+      ],
+      "grade": "D",
+      "abs_elasticity_dscr": 0.63,
+      "provenance": "Same evidence gap as the monthly rate."
+    },
+    {
+      "name": "gross_site_acres",
+      "value": 10.0,
+      "grade": "C",
+      "abs_elasticity_dscr": 0.61,
+      "provenance": "A programme choice, not a measurement."
+    },
+    {
+      "name": "land_per_acre",
+      "value": 175000,
+      "grade": "D",
+      "abs_elasticity_dscr": 0.38,
+      "provenance": "No usable comp found."
+    },
+    {
+      "name": "bloomfield_mill_rate",
+      "value": 34.4,
+      "grade": "A",
+      "abs_elasticity_dscr": 0.31,
+      "provenance": "Adopted 2025 Grand List rate, Town of Bloomfield."
+    },
+    {
+      "name": "ct_assessment_ratio",
+      "value": 0.7,
+      "grade": "A",
+      "abs_elasticity_dscr": 0.31,
+      "provenance": "Connecticut statute."
+    },
+    {
+      "name": "snow_per_paved_acre",
+      "value": 8200,
+      "grade": "F",
+      "abs_elasticity_dscr": 0.18,
+      "provenance": "Never sourced."
+    },
+    {
+      "name": "assessor_factor_improvements",
+      "value": 0.45,
+      "grade": "F",
+      "abs_elasticity_dscr": 0.17,
+      "provenance": "Invented."
+    },
+    {
+      "name": "insurance_rm_utilities_reserves",
+      "value": null,
+      "grade": "D",
+      "abs_elasticity_dscr": 0.16,
+      "provenance": "Plausible operating estimates. Individually immaterial."
+    },
+    {
+      "name": "contingency_and_soft_loadings",
+      "value": [
+        0.12,
+        0.05
+      ],
+      "grade": "C",
+      "abs_elasticity_dscr": 0.09,
+      "provenance": "Standard practice. Immaterial to the test."
+    },
+    {
+      "name": "construction_cost_behaviour_splits",
+      "value": [
+        0.31,
+        3.88,
+        5.26
+      ],
+      "grade": "F",
+      "abs_elasticity_dscr": 0.1,
+      "provenance": "Assigned line by line from judgement, reported to the cent."
+    },
+    {
+      "name": "production_learning_exponent",
+      "value": 0.07,
+      "grade": "F",
+      "abs_elasticity_dscr": 0.05,
+      "provenance": "Invented; implied a calibration that never happened."
+    },
+    {
+      "name": "material_volume_tier_table",
+      "value": null,
+      "grade": "F",
+      "abs_elasticity_dscr": 0.05,
+      "provenance": "Source supported only '5-15% for bulk orders'."
+    },
+    {
+      "name": "exit_cap_rate",
+      "value": 0.0775,
+      "grade": "B",
+      "abs_elasticity_dscr": 0.0,
+      "provenance": "Zero elasticity on the financing test; also wrong instrument for an operating business."
+    },
+    {
+      "name": "revenue_and_opex_growth",
+      "value": 0.03,
+      "grade": "D",
+      "abs_elasticity_dscr": 0.0,
+      "provenance": "Zero elasticity on the year-one test."
+    }
+  ],
+  "grade_counts": {
+    "A": 2,
+    "B": 3,
+    "C": 3,
+    "D": 7,
+    "F": 6
+  },
+  "independent_levers": [
+    "revenue per stall",
+    "stall count",
+    "financing terms"
+  ],
+  "discarded_do_not_resurrect": [
+    {
+      "item": "Neighbor.com Hartford rates as a rate floor",
+      "reason": "Listings are 22-35ft spaces - a different product from a 53ft secured stall."
+    },
+    {
+      "item": "Construction cost-behaviour decomposition",
+      "reason": "Splits assigned from judgement then reported to the cent; 'material is 56%' rests on invented numbers."
+    },
+    {
+      "item": "Production learning curve and material tier table",
+      "reason": "Invented; presented as though calibrated."
+    },
+    {
+      "item": "Snow $8,200/acre and assessor factor 45%",
+      "reason": "Never sourced."
+    },
+    {
+      "item": "Exit cap rate and development profit",
+      "reason": "Zero elasticity on the test, and wrong instrument - this is an operating business, not a leased asset."
+    },
+    {
+      "item": "Ten-year pro forma with 3% growth",
+      "reason": "Zero elasticity on the year-one test."
+    },
+    {
+      "item": "'~1,500 live formulas'",
+      "reason": "Actual count is 1,419."
+    }
+  ],
+  "findings": [
+    {
+      "id": 1,
+      "finding": "Negative leverage in all three scenarios",
+      "confidence": "high",
+      "depends_on": [
+        "R (weakly)"
+      ]
+    },
+    {
+      "id": 2,
+      "finding": "Fixed costs are 56-81% of capital cost",
+      "confidence": "high",
+      "depends_on": [
+        "cost structure"
+      ]
+    },
+    {
+      "id": 3,
+      "finding": "Cost:NOI must clear ~14.2x; scenarios run 22.9-37.3x",
+      "confidence": "high",
+      "depends_on": [
+        "financing terms"
+      ]
+    },
+    {
+      "id": 4,
+      "finding": "A marginal stall is self-financing (m=+$1,647/yr, S2)",
+      "confidence": "medium",
+      "depends_on": [
+        "R",
+        "c",
+        "v"
+      ]
+    },
+    {
+      "id": 5,
+      "finding": "The retrofit has the highest DSCR ceiling (7.05x vs 3.48x)",
+      "confidence": "medium",
+      "depends_on": [
+        "v"
+      ]
+    },
+    {
+      "id": 6,
+      "finding": "P(clearing 1.25x at 10 acres) = 7.2%; 50% crossing near 18 acres",
+      "confidence": "low-medium",
+      "depends_on": [
+        "all six parameters",
+        "priors are the analyst's"
+      ]
+    },
+    {
+      "id": 7,
+      "finding": "Scale fixes the deal",
+      "confidence": "LOW - probably wrong as stated",
+      "depends_on": [
+        "an unmeasured demand elasticity"
+      ],
+      "see": "C-1"
+    }
+  ],
+  "challenge_register": [
+    {
+      "id": "C-1",
+      "priority": 1,
+      "claim_under_attack": "Scale fixes the deal - build 14-18+ acres",
+      "defect": "Occupancy is held constant at 88% while stall count triples. Occupancy is an output of demand vs supply, not an independent input.",
+      "magnitude": {
+        "ct_statewide_spaces": 1238,
+        "ct_public_spaces": 420,
+        "ct_private_spaces": 818,
+        "n_star_339_pct_of_statewide": 0.274,
+        "n_star_339_pct_of_private": 0.414,
+        "acres_18_390_stalls_pct_of_private": 0.477,
+        "acres_30_649_stalls_pct_of_private": 0.793
+      },
+      "direction_of_error": "optimistic",
+      "illustrative_sensitivity": "10% occupancy decay per doubling pushes the 1.25x crossing past 30 acres; 20% decay removes it entirely",
+      "resolve_by": "catchment demand estimate - truck volumes on I-91/I-84 within 30 minutes, Hartford MSA fleet domiciles, CTDOT overnight deficit localised",
+      "if_it_fails": "the central recommendation is void"
+    },
+    {
+      "id": "C-2",
+      "priority": 2,
+      "claim_under_attack": "$309 blended revenue per stall-month",
+      "elasticity": 1.67,
+      "resolve_by": "rate survey of secured 53ft stalls within 15 miles; ~1 week",
+      "threshold": {
+        "acres_10": 387,
+        "acres_16": 306
+      },
+      "if_it_fails": "below ~$300 no Bloomfield site size rescues it; move markets"
+    },
+    {
+      "id": "C-3",
+      "priority": 3,
+      "claim_under_attack": "This is a per-stall retail parking operation",
+      "never_compared": "bulk NNN lease of the yard to a single fleet or 3PL tenant",
+      "why": "eliminates ~$182/stall/month operating overhead, lease-up risk and management intensity at lower rent per acre; Hartford bulk yard leases noted at ~$35-55k/acre/yr but never modelled"
+    },
+    {
+      "id": "C-4",
+      "priority": 4,
+      "claim_under_attack": "Tractor-trailer stalls are the product",
+      "never_modelled": "trailer-only drop-lot storage - ~55ft stalls, 25-30% more per acre, no driver amenities, lower rates"
+    },
+    {
+      "id": "C-5",
+      "priority": 5,
+      "claim_under_attack": "Financeability is a ratio question",
+      "alternative": "For single-purpose operating-business-like collateral it may be binary. If no lender takes it, DSCR is moot."
+    },
+    {
+      "id": "C-6",
+      "priority": 6,
+      "claim_under_attack": "1,450 SF per stall",
+      "defect": "Allocates half a drive aisle to every stall; assumes uniform double-loaded rows. Real layouts have perimeter rows, turning bulbs, pull-through stalls."
+    },
+    {
+      "id": "C-7",
+      "priority": 7,
+      "claim_under_attack": "$175,000/acre land basis",
+      "defect": "No usable comp. Elasticity only 0.38 and no land price alone rescues the deal, so lower priority than it looks - but still a fabricated anchor."
+    },
+    {
+      "id": "C-8",
+      "priority": 8,
+      "claim_under_attack": "Entitlement is a cost and schedule item",
+      "defect": "Bloomfield TPZ has treated outdoor storage as not permitted as a principal use (grade A, meeting minutes). Model carries $85k legal and 14 months but NO probability of refusal."
+    }
+  ],
+  "unexamined_territory": [
+    "Demand - no catchment analysis, competitive supply inventory, or seasonality",
+    "Competitive response - CTDOT adding ~180 free public spaces by ~2030",
+    "Lease-up duration as a function of programme size (6-month reserve assumed regardless; sourced guidance says ~36 months to stabilization)",
+    "Downside floor - alternative industrial land value if the use fails",
+    "Tax abatement and municipal industrial incentives",
+    "Interest rate path and refinance risk - single fixed 7.25% throughout",
+    "Cargo theft and liability tail - garagekeepers named, exposure not stress-tested",
+    "Phasing option value under uncertainty",
+    "Operator comparables - no actual operator P&L obtained; the opex stack is constructed, not observed",
+    "Environmental exposure bounding under CT Release-Based Remediation"
+  ],
+  "known_defects": [
+    "Occupancy independence (C-1) - invalidates finding 7",
+    "Six parameters graded F used in a model presented with cent-level precision",
+    "Cost-per-stall chosen as denominator without testing $/acre, which would have surfaced the bulk-lease alternative earlier",
+    "Cap-rate valuation applied to an operating business - wrong instrument",
+    "Point estimates reported before distributions",
+    "Only three grade-A facts in the entire analysis: mill rate, assessment ratio, zoning posture"
+  ],
+  "next_work_ordered": [
+    "Rate survey (C-2) - one week, falsifies the dominant input",
+    "Catchment demand estimate (C-1) - determines whether the scale recommendation is valid at all",
+    "Model the bulk-lease alternative (C-3)",
+    "Zoning pre-application meeting (C-8) - converts a binary risk into a known one",
+    "Obtain one operator P&L",
+    "Only then revisit site selection and retrofit-at-scale"
+  ],
+  "do_not_spend_effort_on": [
+    "construction cost decomposition",
+    "contingency calibration",
+    "cap-rate selection",
+    "multi-year pro forma"
+  ],
+  "reproduction": {
+    "entry_point": "framework.py",
+    "verify": "python3 verify_workbook.py  # 2,947 cells, 0 formula errors, 69 cells matched",
+    "tooling_note": "LibreOffice is non-functional in the build environment; workbook is flagged fullCalcOnLoad and verify_workbook.py substitutes using the pure-Python formulas engine."
+  }
+}

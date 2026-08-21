@@ -2,6 +2,11 @@
 
 Capex (fixed and variable) → cost per stall → NOI → DSCR.
 
+> **Handing this to another project?** Start with **[`HANDOFF.md`](HANDOFF.md)** and its
+> machine-readable companion `handoff.json`. They carry the reduced model, every parameter
+> graded A–F, the discard list, and a ranked attack surface. Do not propagate anything graded
+> **F**, and read §1 before using any number.
+
 ## What's here
 
 | File | What it is |
@@ -16,6 +21,8 @@ Capex (fixed and variable) → cost per stall → NOI → DSCR.
 | `audit_elasticity.py` | Ranks every input by DSCR elasticity. Six matter; ~forty cannot change the answer. |
 | `audit_evidence.py` | Evidence grades A–F for every input, plus a Monte Carlo over the six identity parameters. |
 | `audit.html` | The audit and method-revision document — discard list, the reduction, the general procedure. |
+| `audit_demand.py` | The demand-side sanity check that was never run: what share of Connecticut's truck parking supply the recommended programme would represent. |
+| `HANDOFF.md` / `handoff.json` | Consolidated handoff for a downstream project — reduced model, graded parameter register, discard list, ranked challenge register. |
 | `brief.html` | Two-page visual brief — the whole analysis condensed to six charts and four tables, laid out on fixed US Letter pages. |
 | `Bloomfield_Truck_Parking_Brief.pdf` | The brief rendered to print-ready PDF (2 pages, Letter). Regenerate with the Playwright script in `report.html`'s workflow, or print `brief.html` from a browser. |
 
@@ -131,6 +138,30 @@ DSCR at 65% LTC for the value-engineered program, across rate and land basis:
 
 At the modeled $315/month, no land price clears — **not even free land.** The rate has
 to move first; land basis alone cannot rescue the deal.
+
+## The defect that invalidates the scale recommendation
+
+`audit_demand.py` runs the check no earlier version did. The model holds stabilized occupancy
+constant at 88% while stall count triples — but occupancy is an *output* of demand versus supply,
+not an input independent of programme size.
+
+Connecticut has ~1,238 truck parking spaces statewide (~420 public, ~818 private). So:
+
+| Programme | Stalls | % of CT total | % of CT private |
+|---|---|---|---|
+| S2 as modelled | 216 | 17.4% | 26.4% |
+| N* — the financing threshold | 339 | 27.4% | 41.4% |
+| 18 acres (50% probability point) | 390 | 31.5% | 47.7% |
+| 30 acres | 649 | 52.4% | 79.3% |
+
+No single facility plausibly holds that share of a statewide market unless Bloomfield sits on a
+demand concentration that was never demonstrated. Illustratively, a 10% occupancy decay per
+doubling of size pushes the 1.25× crossing past 30 acres; a 20% decay removes it entirely — scale
+stops being a solution at all.
+
+**The direction of the error is optimistic, and it applies to the central recommendation of this
+whole analysis.** Finding "scale fixes it" should not be repeated until a catchment demand
+estimate exists.
 
 ## Audit — what this model actually knows
 
