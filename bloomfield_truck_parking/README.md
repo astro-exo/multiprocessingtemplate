@@ -6,12 +6,16 @@ Capex (fixed and variable) → cost per stall → NOI → DSCR.
 
 | File | What it is |
 |---|---|
-| `Bloomfield_Truck_Parking_Model.xlsx` | The underwriting model. 11 tabs, ~1,200 live formulas, three scenarios side by side. Change anything on `Assumptions` and the whole workbook repoints. |
+| `Bloomfield_Truck_Parking_Model.xlsx` | The underwriting model. 12 tabs, 1,419 live formulas, three scenarios side by side. Change anything on `Assumptions` and the whole workbook repoints. |
 | `build_model.py` | Generates the workbook. Every input lives here, so the model is reproducible and diffable. |
 | `verify.py` | Independent pure-Python replication of the same math. Used to cross-check the spreadsheet and to source every number quoted below. |
 | `deal_box.py` | Lever sweeps: rate × land price, density, site scale, and the bracketed viable case. |
 | `verify_workbook.py` | Evaluates every formula in the workbook and diffs the Summary tab against `verify.py`. Exits non-zero on any Excel error or mismatch. |
 | `construction_scale.py` | Economies of scale in yard construction: cost-behaviour decomposition, the scale curve, specification levers and non-land fixed-cost scaling. |
+| `framework.py` | **Read this first.** Reduces the whole model to one identity, validates it against the workbook to 1e-16, and derives the three decision tests plus the inversion. |
+| `audit_elasticity.py` | Ranks every input by DSCR elasticity. Six matter; ~forty cannot change the answer. |
+| `audit_evidence.py` | Evidence grades A–F for every input, plus a Monte Carlo over the six identity parameters. |
+| `audit.html` | The audit and method-revision document — discard list, the reduction, the general procedure. |
 | `brief.html` | Two-page visual brief — the whole analysis condensed to six charts and four tables, laid out on fixed US Letter pages. |
 | `Bloomfield_Truck_Parking_Brief.pdf` | The brief rendered to print-ready PDF (2 pages, Letter). Regenerate with the Playwright script in `report.html`'s workflow, or print `brief.html` from a browser. |
 
@@ -127,6 +131,46 @@ DSCR at 65% LTC for the value-engineered program, across rate and land basis:
 
 At the modeled $315/month, no land price clears — **not even free land.** The rate has
 to move first; land basis alone cannot rescue the deal.
+
+## Audit — what this model actually knows
+
+An elasticity test over all 47 arguable inputs found that **six can change the conclusion and
+roughly forty cannot**, and that the highest-leverage input carries the weakest evidence.
+`audit.html` documents the full revision; the short version:
+
+**Discarded.** Neighbor.com Hartford rates cited as a rate "floor" (those listings are 22–35 ft
+spaces — a different product); the invented mobilisation/production/material cost splits and the
+learning-curve and volume-tier parameters built on them; unsourced snow-removal and assessor
+factors; the exit cap rate and "development profit" framing (zero elasticity on the financing test,
+and conceptually wrong for an operating business); the growth-driven 10-year pro forma; and an
+overstated formula count.
+
+**The reduction.** The whole workbook collapses, exactly, to:
+
+    DSCR = [ N(R − c)·12 − F ] / [ LTC · k · (N·v + Φ) ]
+
+reproducing the model to 1e-16. Rearranged it gives three tests, in order:
+
+1. **Sign of leverage** — yield on cost vs. interest rate. All three scenarios show *negative*
+   leverage (4.36% vs. 7.25% for S2): debt reduces the equity return. This is stronger and simpler
+   than the DSCR result and should have led the original report.
+2. **Is a marginal stall self-financing?** `m = (R−c)·12 − D·LTC·k·v`. If m ≤ 0, no scale ever
+   works. Here m = +$1,647, so scale can work.
+3. **Is the site big enough?** `N* = B/m` where `B = F + D·LTC·k·Φ`. S2 needs 339 stalls and has
+   216.
+
+**The answer, honestly stated.** With priors widened to the edge of plausibility, a 10-acre
+programme clears the 1.25× test in **7.2%** of draws and achieves positive leverage in 5.9%. The
+50% crossing on site size is near **18 acres**, not the 14 the point estimate suggested.
+
+**The inversion.** Rather than asserting a rent, solve for the rent the site must achieve:
+`R* = c + [F + D·LTC·k·(N·v + Φ)] / 12N`. At 10 acres that is $387/stall/month; at 16 acres, $306.
+That converts an unanswerable modelling question into an answerable market one.
+
+**One conclusion reversed.** The retrofit (S3) has the highest DSCR ceiling of the three — 7.05×
+at infinite scale, against 3.48× for the value-engineered greenfield — because its variable capex
+per stall is a third of the alternatives. The original report dismissed it on its 187-stall result
+and missed that *at scale it is structurally the strongest configuration*.
 
 ## Economies of scale in construction
 

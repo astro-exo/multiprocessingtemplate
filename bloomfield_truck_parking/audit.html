@@ -1,0 +1,684 @@
+<title>Bloomfield Model Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F1F2EE; --surface:#FFFFFF; --surface-2:#FAFBF8;
+  --ink:#14181B; --ink-2:#3C4347; --muted:#5B625F;
+  --rule:#D8DBD2; --rule-strong:#B4B9B0;
+  --accent:#1D4E6B; --accent-soft:#E4EDF2;
+  --keep:#1f6fb2; --judge:#fab219; --invent:#d03b3b; --good:#0ca30c;
+  --t-good:rgba(12,163,12,.13); --t-crit:rgba(208,59,59,.11);
+  --shadow:0 1px 2px rgba(20,24,27,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#131619; --surface:#1A1E21; --surface-2:#171B1E;
+    --ink:#E9EBE7; --ink-2:#C3C9C5; --muted:#98A19D;
+    --rule:#2C3237; --rule-strong:#414950;
+    --accent:#7FB8D8; --accent-soft:#16303D;
+    --keep:#3f8ecf; --judge:#fab219; --invent:#e05c5c; --good:#2fbb2f;
+    --t-good:rgba(12,163,12,.20); --t-crit:rgba(208,59,59,.20);
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#131619; --surface:#1A1E21; --surface-2:#171B1E;
+  --ink:#E9EBE7; --ink-2:#C3C9C5; --muted:#98A19D;
+  --rule:#2C3237; --rule-strong:#414950;
+  --accent:#7FB8D8; --accent-soft:#16303D;
+  --keep:#3f8ecf; --judge:#fab219; --invent:#e05c5c; --good:#2fbb2f;
+  --t-good:rgba(12,163,12,.20); --t-crit:rgba(208,59,59,.20);
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px; margin:0 auto; padding:0 28px 90px}
+
+.head{border:1px solid var(--rule-strong); background:var(--surface);
+  margin:32px 0 40px; box-shadow:var(--shadow)}
+.head .band{padding:22px 26px 18px; border-bottom:1px solid var(--rule)}
+.head h1{font-family:Archivo,Arial,sans-serif; font-weight:700;
+  font-size:clamp(27px,4.2vw,42px); line-height:1.05; letter-spacing:-.021em;
+  margin:0; text-wrap:balance}
+.head .sub{font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); margin-top:8px}
+.tb{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.tb>div{padding:13px 26px; border-right:1px solid var(--rule)}
+.tb>div:last-child{border-right:none}
+.tb dt{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 3px}
+.tb dd{margin:0; font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:500;
+  font-variant-numeric:tabular-nums}
+
+.opener{border:1px solid var(--rule-strong); border-left:5px solid var(--invent);
+  background:var(--surface); padding:24px 26px; margin:0 0 48px; box-shadow:var(--shadow)}
+.opener .kicker{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--invent); font-weight:600; margin-bottom:9px}
+.opener p{margin:0 0 12px; max-width:70ch}
+.opener p:last-child{margin-bottom:0}
+
+section{display:grid; grid-template-columns:62px minmax(0,1fr); gap:0 26px;
+  padding-top:38px; margin-top:38px; border-top:1px solid var(--rule)}
+section>.n{font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;
+  color:var(--accent); padding-top:6px}
+section>.b{min-width:0}
+h2{font-family:Archivo,Arial,sans-serif; font-weight:600; font-size:clamp(21px,2.5vw,27px);
+  letter-spacing:-.014em; line-height:1.18; margin:0 0 6px; text-wrap:balance}
+h3{font-family:Archivo,Arial,sans-serif; font-weight:600; font-size:13.5px;
+  letter-spacing:.055em; text-transform:uppercase; color:var(--muted); margin:32px 0 11px}
+.lede{color:var(--ink-2); max-width:68ch; margin:0 0 20px}
+p{max-width:68ch; margin:0 0 15px}
+strong{font-weight:600}
+
+.plate{border:1px solid var(--rule); background:var(--surface); margin:20px 0 24px;
+  box-shadow:var(--shadow)}
+.plate>figcaption{display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px;
+  padding:11px 16px; border-bottom:1px solid var(--rule); background:var(--surface-2);
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted)}
+.plate>figcaption b{color:var(--ink); font-weight:600}
+.chart{padding:18px 16px 6px}
+.scroll{overflow-x:auto}
+p.note{margin:0; padding:11px 16px; max-width:none; font-size:13.5px; line-height:1.5;
+  color:var(--muted); border-top:1px solid var(--rule); background:var(--surface-2)}
+
+table{border-collapse:collapse; width:100%; font-family:"IBM Plex Mono",monospace;
+  font-size:12.5px; font-variant-numeric:tabular-nums}
+th,td{padding:6px 12px; text-align:right; white-space:nowrap; border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left; white-space:normal; min-width:190px}
+thead th{font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+  font-weight:600; border-bottom:1px solid var(--rule-strong)}
+tbody tr:last-child td{border-bottom:none}
+tr.tot td{font-weight:600; border-top:1px solid var(--rule-strong); background:var(--surface-2)}
+tr.key td{font-weight:600; background:var(--accent-soft)}
+td.reason{white-space:normal; text-align:left; min-width:250px; max-width:420px;
+  font-size:11.5px; line-height:1.45; color:var(--muted); font-family:"Source Serif 4",Georgia,serif}
+.gr{display:inline-block; min-width:19px; text-align:center; font-weight:600;
+  padding:1px 5px; border-radius:2px; font-size:11px}
+.gA,.gB{background:var(--t-good); color:var(--good)}
+.gC{background:var(--rule); color:var(--ink-2)}
+.gD{background:rgba(250,178,25,.2); color:#8a6000}
+.gF{background:var(--t-crit); color:var(--invent)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .gD{color:#fab219}}
+:root[data-theme="dark"] .gD{color:#fab219}
+
+.eq{font-family:"IBM Plex Mono",monospace; font-size:14px; background:var(--surface);
+  border:1px solid var(--rule); border-left:3px solid var(--accent);
+  padding:14px 18px; margin:16px 0; overflow-x:auto; line-height:1.9; color:var(--ink)}
+.eq em{color:var(--muted); font-style:normal; font-size:12px}
+
+.legend{display:flex; flex-wrap:wrap; gap:16px; padding:0 16px 14px;
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-2)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.sw{width:11px; height:11px; border-radius:2px; display:inline-block}
+.sw.dash{width:15px; height:0; border-top:2px dashed var(--ink-2); border-radius:0}
+svg{display:block; width:100%; height:auto; overflow:visible}
+svg text{font-family:"IBM Plex Mono",monospace; fill:var(--muted); font-size:11px}
+svg .val{fill:var(--ink); font-weight:600; font-size:11.5px}
+svg .rowlab{fill:var(--ink); font-size:11px}
+svg .axis{stroke:var(--rule-strong); stroke-width:1}
+svg .grid{stroke:var(--rule); stroke-width:1; stroke-dasharray:2 4}
+
+.callout{border:1px solid var(--rule-strong); background:var(--surface);
+  padding:20px 22px; margin:24px 0; box-shadow:var(--shadow)}
+.callout .k{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:8px}
+.callout .big{font-family:Archivo,Arial,sans-serif; font-weight:700;
+  font-size:clamp(21px,3.2vw,31px); line-height:1.16; letter-spacing:-.018em;
+  margin:0 0 10px; max-width:28ch; text-wrap:balance}
+.callout p{margin:0; color:var(--ink-2); font-size:16px}
+
+ol.steps{max-width:68ch; padding-left:0; list-style:none; counter-reset:s; margin:18px 0 0}
+ol.steps li{counter-increment:s; position:relative; padding-left:40px; margin-bottom:20px}
+ol.steps li::before{content:counter(s); position:absolute; left:0; top:1px;
+  font-family:Archivo,Arial,sans-serif; font-size:15px; font-weight:700; color:var(--accent)}
+ol.steps b{font-weight:600}
+
+footer{margin-top:56px; padding-top:26px; border-top:1px solid var(--rule);
+  font-size:14px; color:var(--muted); max-width:80ch}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:720px){
+  body{font-size:16px}
+  section{grid-template-columns:1fr; gap:0}
+  section>.n{padding:0 0 8px}
+  .tb>div{border-right:none; border-bottom:1px solid var(--rule)}
+}
+</style>
+
+<div class="wrap">
+
+<header class="head">
+  <div class="band">
+    <h1>What the model actually knows</h1>
+    <div class="sub">Bloomfield truck parking &middot; audit and method revision</div>
+  </div>
+  <dl class="tb">
+    <div><dt>Inputs audited</dt><dd>47</dd></div>
+    <div><dt>That can change the answer</dt><dd>6</dd></div>
+    <div><dt>Graded F &mdash; invented</dt><dd>6</dd></div>
+    <div><dt>Identity error</dt><dd>1&times;10&#8315;&#185;&#8310;</dd></div>
+    <div><dt>P(financeable), 10 ac</dt><dd>7.2%</dd></div>
+  </dl>
+</header>
+
+<div class="opener">
+  <div class="kicker">The finding, applied to my own work</div>
+  <p>The model had 47 arguable inputs specified to the cent. An elasticity test shows
+  <strong>six of them can change the conclusion</strong> and roughly forty cannot, no matter how
+  wrong they are. That alone would be a presentation problem rather than an analytical one.</p>
+  <p>The real problem is the overlap: <strong>the single highest-leverage input carries the
+  weakest evidence.</strong> Blended revenue per stall has a DSCR elasticity of 1.67 &mdash; more
+  than any other input &mdash; and there is no verifiable Hartford-area rate for a secured 53&nbsp;ft
+  tractor-trailer stall behind it. The number I used was inferred from a national band.</p>
+  <p>So the honest output was never a DSCR. It is a <strong>distribution</strong> and a
+  <strong>required value</strong>: what the rent would have to be, and how likely that is. This
+  document discards what does not survive, reduces what remains to one identity, and sets out a
+  method that generalises to any deal of this shape.</p>
+</div>
+
+<section>
+  <div class="n">01</div>
+  <div class="b">
+    <h2>Which inputs can actually change the answer</h2>
+    <p class="lede">Normalised elasticity of DSCR to each input, by central difference at
+    &plusmn;5%. An input with |e|&nbsp;&lt;&nbsp;0.1 cannot move the conclusion; an input with
+    |e|&nbsp;&gt;&nbsp;1.0 deserves the entire diligence budget.</p>
+
+    <figure class="plate">
+      <figcaption><b>Leverage against evidence</b><span>Bars = |elasticity| &middot; colour = evidence grade</span></figcaption>
+      <div class="chart"><div id="cE"></div></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--keep)"></i>A&ndash;C &mdash; sourced or derivable</span>
+        <span><i class="sw" style="background:var(--judge)"></i>D &mdash; judgement, unverified</span>
+        <span><i class="sw" style="background:var(--invent)"></i>F &mdash; invented for the model</span>
+      </div>
+      <p class="note">The two longest bars are the two weakest-evidenced inputs. Everything below
+      the 0.1 line is decoration &mdash; contingency, soft-cost loadings, growth rates, construction
+      carry, the entire cost-behaviour decomposition.</p>
+    </figure>
+
+    <p>Several inputs share an elasticity exactly because they enter multiplicatively. Rate and
+    occupancy both move revenue; acres, yield and SF-per-stall all move stall count. There are not
+    six independent levers &mdash; there are <strong>three</strong>: revenue per stall, stall count,
+    and the financing terms.</p>
+  </div>
+</section>
+
+<section>
+  <div class="n">02</div>
+  <div class="b">
+    <h2>What I am discarding</h2>
+    <p class="lede">Not softened, not caveated &mdash; removed from the evidentiary basis. Some of
+    it stays in the workbook as a labelled illustration; none of it should carry weight.</p>
+
+    <figure class="plate">
+      <figcaption><b>Discard list</b><span>With the reason each fails</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>Item</th><th>Grade</th><th>|e|</th><th class="reason">Why it goes</th></tr></thead>
+        <tbody>
+          <tr><td>Neighbor.com Hartford rates as a &ldquo;floor&rdquo;</td>
+            <td><span class="gr gF">F</span></td><td>&mdash;</td>
+            <td class="reason">Those listings are 22&ndash;35&nbsp;ft spaces. A 53&nbsp;ft secured stall is a
+            different product with different demand and different competition. Citing it created an
+            illusion of local grounding where none existed. <b>Removed entirely.</b></td></tr>
+          <tr><td>Construction cost-behaviour splits</td>
+            <td><span class="gr gF">F</span></td><td>&lt;0.10</td>
+            <td class="reason">The mobilisation / production / material split was assigned line by
+            line from judgement, then reported to the cent. The headline &ldquo;material is 56% of the
+            section&rdquo; rests entirely on numbers I made up. <b>Demoted to an illustrative model, and
+            it cannot move DSCR anyway.</b></td></tr>
+          <tr><td>Production learning exponent (0.070) and floor (0.82)</td>
+            <td><span class="gr gF">F</span></td><td>&lt;0.05</td>
+            <td class="reason">Invented, and presented in a way that implied calibration against
+            data. There was no data. <b>Labelled as an assumption with no empirical basis.</b></td></tr>
+          <tr><td>Material volume tier table</td>
+            <td><span class="gr gF">F</span></td><td>&lt;0.05</td>
+            <td class="reason">The source supported only &ldquo;5&ndash;15% for bulk orders&rdquo; and
+            &ldquo;500+ tons prices better&rdquo;. I built a five-step schedule from that. <b>Collapsed to
+            the single range the source actually supports.</b></td></tr>
+          <tr><td>Snow &amp; ice at $8,200 per paved acre</td>
+            <td><span class="gr gF">F</span></td><td>0.18</td>
+            <td class="reason">Never sourced. Reasoned about in my head, then written down as
+            though it had been checked. <b>Flagged as unsourced.</b></td></tr>
+          <tr><td>Assessor factor on improvements (45%)</td>
+            <td><span class="gr gF">F</span></td><td>0.17</td>
+            <td class="reason">Invented. A Connecticut assessor may use a cost or an income approach
+            and the two diverge widely at these NOIs. <b>Kept only as a sensitivity axis, never as a
+            base case.</b></td></tr>
+          <tr><td>Exit cap rate and &ldquo;development profit&rdquo;</td>
+            <td><span class="gr gB">B</span></td><td>0.00</td>
+            <td class="reason">Two separate faults. It has <b>zero</b> elasticity on the financing
+            test, so it decided nothing. And it is conceptually wrong: a per-stall retail parking
+            operation is an operating business, not a leased asset, so capitalising its NOI against
+            leased-IOS comps overstates what it is worth. <b>Demoted out of the headline.</b></td></tr>
+          <tr><td>Ten-year pro forma with 3% growth</td>
+            <td><span class="gr gD">D</span></td><td>0.00</td>
+            <td class="reason">Growth has zero elasticity on the year-one test that decides the
+            deal. It added pages and no information. <b>Retained as mechanics, removed from the
+            argument.</b></td></tr>
+          <tr><td>88&ndash;90% stabilized occupancy</td>
+            <td><span class="gr gD">D</span></td><td>1.67</td>
+            <td class="reason">My own cited source says 70% is the typical stabilization target. I
+            used 88% without reconciling the contradiction &mdash; on the second-highest-leverage
+            input in the model. <b>Replaced by a prior spanning 70&ndash;95%.</b></td></tr>
+          <tr><td>&ldquo;~1,500 live formulas&rdquo;</td>
+            <td><span class="gr gF">F</span></td><td>&mdash;</td>
+            <td class="reason">The workbook has 1,419. A small thing, but it is exactly the kind of
+            rounding-in-my-own-favour that this audit exists to catch. <b>Corrected.</b></td></tr>
+        </tbody>
+      </table></div>
+    </figure>
+
+    <h3>What survives unchanged</h3>
+    <p>The Connecticut assessment ratio (statute), the Bloomfield mill rate (adopted, published),
+    the mortgage-constant arithmetic, the 14.2&times; cost-to-NOI threshold, and the stall-geometry
+    calculation &mdash; which is an engineering derivation anyone can check, not a claim about the
+    world. The zoning finding also stands: it came from meeting minutes, not inference.</p>
+  </div>
+</section>
+
+<section>
+  <div class="n">03</div>
+  <div class="b">
+    <h2>The reduction &mdash; forty inputs are one identity</h2>
+    <p class="lede">Everything the workbook computes collapses, exactly, into a single expression.
+    Stating it this way is what made the audit possible: you cannot see that forty inputs are
+    decoration until you can see the six that are not.</p>
+
+    <div class="eq">
+DSCR &nbsp;=&nbsp; [ N(R &minus; c)&middot;12 &minus; F ] &nbsp;/&nbsp; [ LTC &middot; k &middot; (N&middot;v + &Phi;) ]<br><br>
+<em>N</em> &nbsp;stalls = A &middot; 43,560 &middot; y / s<br>
+<em>R</em> &nbsp;blended revenue per stall-month<br>
+<em>c</em> &nbsp;variable operating cost per stall-month<br>
+<em>F</em> &nbsp;fixed annual operating cost<br>
+<em>v</em> &nbsp;variable capex per stall<br>
+<em>&Phi;</em> &nbsp;fixed capex &mdash; land, entitlement, infrastructure, financing, reserves<br>
+<em>k</em> &nbsp;annual mortgage constant &nbsp;&middot;&nbsp; <em>LTC</em> &nbsp;loan to cost
+    </div>
+
+    <figure class="plate">
+      <figcaption><b>Validation</b><span>Identity vs. the 1,419-formula workbook</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th></th><th>N</th><th>R $/mo</th><th>c $/mo</th><th>F $/yr</th><th>v $/stall</th><th>&Phi;</th><th>Identity</th><th>Workbook</th><th>Error</th></tr></thead>
+        <tbody>
+          <tr><td>S1 &middot; full asphalt</td><td>216</td><td>$353</td><td>$99.16</td><td>$406,635</td><td>$19,123</td><td>$5,218,590</td><td>0.4750</td><td>0.4750</td><td>0</td></tr>
+          <tr><td>S2 &middot; value-engineered</td><td>216</td><td>$309</td><td>$95.20</td><td>$225,844</td><td>$13,069</td><td>$4,711,612</td><td>0.7740</td><td>0.7740</td><td>1e&minus;16</td></tr>
+          <tr><td>S3 &middot; retrofit</td><td>187</td><td>$322</td><td>$95.44</td><td>$229,327</td><td>$6,829</td><td>$5,466,396</td><td>0.7314</td><td>0.7314</td><td>2e&minus;16</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Exact to floating point. The identity is not an approximation of the model
+      &mdash; it <em>is</em> the model, and everything else is parameterisation of these six terms.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="n">04</div>
+  <div class="b">
+    <h2>Three tests, in order</h2>
+    <p class="lede">Rearranged, the identity yields a decision procedure that needs no spreadsheet
+    and applies to any parking or outdoor-storage deal.</p>
+
+    <h3>Test zero &mdash; the sign of leverage</h3>
+    <p>Before any DSCR convention, compare yield on cost to the interest rate. If yield on cost is
+    lower, debt <em>reduces</em> the equity return and the deal is not a financing problem, it is an
+    asset problem.</p>
+    <figure class="plate">
+      <figcaption><b>Test zero</b><span>Needs no DSCR floor, LTC or cap rate</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th></th><th>Yield on cost</th><th>Debt rate</th><th>Spread</th><th class="reason">Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>S1 &middot; full asphalt</td><td>2.68%</td><td>7.25%</td><td>&minus;4.57%</td><td class="reason">Negative leverage</td></tr>
+          <tr><td>S2 &middot; value-engineered</td><td>4.36%</td><td>7.25%</td><td>&minus;2.89%</td><td class="reason">Negative leverage</td></tr>
+          <tr><td>S3 &middot; retrofit</td><td>4.12%</td><td>7.25%</td><td>&minus;3.13%</td><td class="reason">Negative leverage</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">This is a stronger and simpler statement than the DSCR result, and it depends
+      on fewer assumptions. It should have led the original report.</p>
+    </figure>
+
+    <h3>Test one &mdash; is a marginal stall self-financing?</h3>
+    <div class="eq">m &nbsp;=&nbsp; (R &minus; c)&middot;12 &nbsp;&minus;&nbsp; D &middot; LTC &middot; k &middot; v<br>
+    <em>if m &le; 0, no amount of scale ever works &mdash; every added stall deepens the hole</em></div>
+    <p>Here m is <strong>+$1,647</strong> per stall per year for S2. Scale can work. That is worth
+    knowing before spending a week on site-size analysis.</p>
+
+    <h3>Test two &mdash; is the site big enough for its own fixed costs?</h3>
+    <div class="eq">N* &nbsp;=&nbsp; B / m &nbsp;&nbsp;where&nbsp;&nbsp; B &nbsp;=&nbsp; F &nbsp;+&nbsp; D &middot; LTC &middot; k &middot; &Phi;</div>
+    <figure class="plate">
+      <figcaption><b>Tests one and two</b><span>The whole workbook, from six numbers</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th></th><th>m $/stall/yr</th><th>B $/yr</th><th>N* needed</th><th>N actual</th><th>Shortfall</th><th>DSCR ceiling</th></tr></thead>
+        <tbody>
+          <tr><td>S1 &middot; full asphalt</td><td>$1,694</td><td>$774,408</td><td>457</td><td>216</td><td>+241</td><td>2.82&times;</td></tr>
+          <tr class="key"><td>S2 &middot; value-engineered</td><td>$1,647</td><td>$557,889</td><td>339</td><td>216</td><td>+123</td><td>3.48&times;</td></tr>
+          <tr><td>S3 &middot; retrofit</td><td>$2,232</td><td>$614,564</td><td>275</td><td>187</td><td>+88</td><td>7.05&times;</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">The DSCR ceiling is (R&minus;c)&middot;12 / (LTC&middot;k&middot;v) &mdash; the best
+      achievable at infinite scale. Note S3: the retrofit has by far the highest ceiling, because
+      its variable capex per stall is a third of the others. The original report dismissed S3 on its
+      216-stall result and missed that <strong>at scale it is structurally the strongest of the
+      three</strong>.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="n">05</div>
+  <div class="b">
+    <h2>The answer is a distribution, not a number</h2>
+    <p class="lede">Monte Carlo over the six identity parameters, with priors deliberately widened
+    to the edge of plausibility &mdash; revenue spanning $190&ndash;470 per stall-month, occupancy and
+    geometry ranged rather than asserted. 200,000 draws at 10 gross acres.</p>
+
+    <figure class="plate">
+      <figcaption><b>DSCR distribution</b><span>10 gross acres &middot; 200,000 draws</span></figcaption>
+      <div class="chart"><div id="cH"></div></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--invent)"></i>Fails the 1.25&times; test</span>
+        <span><i class="sw" style="background:var(--good)"></i>Passes</span>
+      </div>
+      <p class="note">P10 0.25&times; &middot; median 0.67&times; &middot; P90 1.18&times;. Only
+      <strong>7.2%</strong> of draws clear 1.25&times;, and only 5.9% achieve positive leverage. The
+      spread is driven almost entirely by the revenue prior &mdash; the input with no local evidence.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Probability of financeability against site size</b><span>Same priors, acreage varied</span></figcaption>
+      <div class="chart"><div id="cP"></div></div>
+      <p class="note">The 50% crossing sits near <strong>18 acres</strong>. The original report's
+      &ldquo;14 acres works&rdquo; was a point estimate under favourable assumptions; run
+      distributionally, 14 acres is a 31% proposition.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="n">06</div>
+  <div class="b">
+    <h2>The inversion &mdash; state what must be true, then go measure it</h2>
+    <p class="lede">Rather than asserting a rent and reporting a DSCR, solve for the rent the site
+    must achieve. This converts an unanswerable modelling question into an answerable market one.</p>
+
+    <div class="eq">R* &nbsp;=&nbsp; c &nbsp;+&nbsp; [ F &nbsp;+&nbsp; D &middot; LTC &middot; k &middot; (N&middot;v + &Phi;) ] &nbsp;/&nbsp; 12N</div>
+
+    <figure class="plate">
+      <figcaption><b>Required blended revenue per stall-month</b><span>Against programme size</span></figcaption>
+      <div class="chart"><div id="cR"></div></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--keep)"></i>Required rate R*</span>
+        <span><i class="sw dash"></i>$309 &mdash; the unevidenced base case</span>
+      </div>
+      <p class="note">At 10 acres the site must achieve $387. At 16 acres, $306 &mdash; below the base
+      case. The crossing point is the real finding: <strong>somewhere around 16 acres the deal stops
+      needing heroic rent assumptions and starts needing ordinary ones.</strong></p>
+    </figure>
+
+    <div class="callout">
+      <div class="k">The question that replaces the model</div>
+      <p class="big">Can a secured 53&nbsp;ft stall in Bloomfield be let at $306&ndash;387 a month, at
+      90% occupancy?</p>
+      <p>That is a market question with a findable answer &mdash; a week of calls to operators,
+      brokers and fleet managers within fifteen miles. No amount of further modelling can settle it,
+      and the model should never have implied that it had.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="n">07</div>
+  <div class="b">
+    <h2>The general method</h2>
+    <p class="lede">This procedure is not specific to Bloomfield, or to truck parking. It applies to
+    any asset whose economics are &ldquo;fixed site cost plus a repeated unit&rdquo; &mdash; self-storage,
+    RV and boat storage, outdoor industrial storage, EV charging, small-bay industrial.</p>
+
+    <ol class="steps">
+      <li><b>Reduce to an identity before building anything.</b> Write the answer as one expression
+      in the fewest terms that reproduce it exactly. If you cannot, you do not yet understand the
+      deal. Validate the identity against the full model &mdash; it should agree to floating point.</li>
+      <li><b>Rank every input by elasticity, not by intuition.</b> Central difference at &plusmn;5%.
+      Inputs below |e|&nbsp;=&nbsp;0.1 get no further work; inputs above 1.0 get all of it. This takes
+      minutes and reorders the entire project.</li>
+      <li><b>Grade every input for evidence, on a scale that has an F on it.</b> A primary source, B
+      published secondary, C derivable arithmetic, D judgement, F invented. Be willing to grade your
+      own work F &mdash; six of mine were.</li>
+      <li><b>Cross elasticity against grade.</b> High leverage with low evidence is the only cell
+      that matters. Everything else is either safe or irrelevant. That cell is your diligence plan.</li>
+      <li><b>Run the sign tests before the magnitude tests.</b> Is leverage positive? Is the marginal
+      unit self-financing? These need no distribution and often end the analysis.</li>
+      <li><b>Invert rather than assert.</b> Solve for the value each weak input must take. A required
+      value is falsifiable by a phone call; a predicted value invites false confidence.</li>
+      <li><b>Report a distribution and a probability.</b> Where the dominant input is unmeasured,
+      a point estimate is a claim you cannot support. Widen the priors past comfort and report the
+      probability anyway.</li>
+      <li><b>Keep a discard list.</b> Write down what you removed and why. It is the only durable
+      protection against the same weak number quietly returning in the next revision.</li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="n">08</div>
+  <div class="b">
+    <h2>What this changes</h2>
+    <p>The direction of the original conclusion survives &mdash; a 10-acre greenfield programme at
+    $175,000 an acre does not work, and scale is the dominant lever. Four things change materially:</p>
+
+    <figure class="plate">
+      <figcaption><b>Revisions</b><span>Original vs. audited</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>Claim</th><th class="reason">Originally</th><th class="reason">After audit</th></tr></thead>
+        <tbody>
+          <tr><td>Headline test</td>
+            <td class="reason">DSCR 0.77&times; against a 1.25&times; floor</td>
+            <td class="reason">Negative leverage &mdash; 4.36% yield on cost against a 7.25% debt rate. Simpler, stronger, fewer assumptions.</td></tr>
+          <tr><td>Confidence</td>
+            <td class="reason">A single DSCR, sensitised in grids</td>
+            <td class="reason">7.2% probability of clearing the test at 10 acres, with the dominant input unmeasured.</td></tr>
+          <tr><td>Site size threshold</td>
+            <td class="reason">&ldquo;14 acres clears the test&rdquo;</td>
+            <td class="reason">14 acres is a 31% proposition. The 50% crossing is nearer 18 acres.</td></tr>
+          <tr><td>Best structure</td>
+            <td class="reason">S2, value-engineered greenfield</td>
+            <td class="reason">S3, the retrofit &mdash; highest DSCR ceiling at 7.05&times; because variable capex per stall is a third of the alternatives. It fails at 187 stalls, not on structure.</td></tr>
+        </tbody>
+      </table></div>
+    </figure>
+
+    <div class="callout">
+      <div class="k">Revised recommendation</div>
+      <p class="big">Stop modelling. Go measure the rent, then look for a large existing paved yard.</p>
+      <p>The rent survey is the whole deal and it costs a week. If secured 53&nbsp;ft stalls in the
+      Hartford market clear roughly $300 a month, the search is for 16&nbsp;acres or more &mdash; and a
+      retrofit of an existing paved yard at that size is structurally the strongest configuration
+      available, not the greenfield build the original report centred on. If the rent is materially
+      below $300, no site size in Bloomfield rescues it and the search should move markets.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p style="max-width:80ch">Reproducible from the repository: <code>framework.py</code> derives and
+  validates the identity, <code>audit_elasticity.py</code> ranks every input by leverage,
+  <code>audit_evidence.py</code> carries the evidence grades and the Monte Carlo. The underlying
+  workbook is unchanged at 12 tabs and 1,419 live formulas; what changed is which of its numbers are
+  allowed to carry weight.</p>
+  <p style="max-width:80ch">Grades reflect evidence available to this analysis, not the best evidence
+  obtainable. Several F grades could become A grades with a week of primary research &mdash; which is
+  precisely the recommendation.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var NS="http://www.w3.org/2000/svg";
+  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a){if(a[k]!=null)e.setAttribute(k,a[k]);}return e;}
+  function put(id,s){var h=document.getElementById(id); if(h) h.appendChild(s);}
+  var GC={A:"var(--keep)",B:"var(--keep)",C:"var(--keep)",D:"var(--judge)",F:"var(--invent)"};
+
+  /* ---- elasticity vs evidence ---- */
+  (function(){
+    var d=[
+      ["Blended revenue $/stall/mo",1.67,"F"],["Stabilized occupancy",1.67,"D"],
+      ["Paved SF per stall",1.59,"C"],["Net yard efficiency",1.00,"D"],
+      ["Loan to cost",1.00,"B"],["Monthly / transient mix",0.87,"D"],
+      ["Permanent loan rate",0.65,"B"],["Transient rate & utilisation",0.63,"D"],
+      ["Gross site acres",0.61,"C"],["Land $/acre",0.38,"D"],
+      ["Mill rate / assessment ratio",0.31,"A"],["Snow & ice per acre",0.18,"F"],
+      ["Assessor factor on improvements",0.17,"F"],["Insurance / R&M / utilities",0.16,"D"],
+      ["Contingency & soft loadings",0.09,"C"],["Construction cost splits",0.08,"F"],
+      ["Exit cap rate",0.00,"B"],["Revenue & opex growth",0.00,"D"]
+    ];
+    var W=840,padL=232,padR=112,padT=16,padB=30,rowH=25;
+    var H=padT+padB+d.length*rowH;
+    var max=1.8, x=function(v){return padL+v/max*(W-padL-padR);};
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Model inputs ranked by absolute DSCR elasticity and coloured by evidence grade. The two highest-elasticity inputs, blended revenue and occupancy, carry grades F and D."});
+    [0,0.5,1.0,1.5].forEach(function(v){
+      s.appendChild(el("line",{x1:x(v),x2:x(v),y1:padT-6,y2:H-padB+2,class:v===0?"axis":"grid"}));
+      var t=el("text",{x:x(v),y:H-padB+16,"text-anchor":"middle"});
+      t.textContent=v.toFixed(1); s.appendChild(t);
+    });
+    /* immateriality threshold */
+    s.appendChild(el("line",{x1:x(0.1),x2:x(0.1),y1:padT-10,y2:H-padB+2,
+      stroke:"var(--muted)","stroke-width":1.4,"stroke-dasharray":"3 3"}));
+    var th=el("text",{x:x(0.1)+5,y:padT-13,"font-size":"9.5"});
+    th.textContent="0.1 — below this, cannot change the answer"; s.appendChild(th);
+    d.forEach(function(o,i){
+      var y=padT+i*rowH, bh=14, by=y+3;
+      var lb=el("text",{x:padL-10,y:by+bh/2+4,class:"rowlab","text-anchor":"end"});
+      lb.textContent=o[0]; s.appendChild(lb);
+      var w=Math.max(x(o[1])-padL,1.5);
+      s.appendChild(el("rect",{x:padL,y:by,width:w,height:bh,fill:GC[o[2]]}));
+      var tl=el("text",{x:padL+w+8,y:by+bh/2+4,class:"val"});
+      tl.textContent=o[1].toFixed(2); s.appendChild(tl);
+      var g=el("text",{x:padL+w+52,y:by+bh/2+4,"font-size":"10.5","font-weight":"600"});
+      g.setAttribute("fill",GC[o[2]]); g.textContent=o[2]; s.appendChild(g);
+    });
+    var ax=el("text",{x:(padL+W-padR)/2,y:H-2,"text-anchor":"middle","font-size":"9.5"});
+    ax.setAttribute("letter-spacing",".1em"); ax.textContent="|ELASTICITY OF DSCR|"; s.appendChild(ax);
+    put("cE",s);
+  })();
+
+  /* ---- DSCR histogram ---- */
+  (function(){
+    var pc=[0.18,0.77,2.15,4.08,6.16,8.18,10.01,11.03,10.97,10.05,8.89,7.49,6.08,4.92,3.52,2.38,1.46,0.86,0.44,0.21,0.09,0.03,0.02,0.01];
+    var W=840,padL=44,padR=20,padT=22,padB=40;
+    var H=260, ph=H-padT-padB;
+    var lo=-0.2, step=0.1, max=11.6;
+    var x=function(v){return padL+(v-lo)/(24*step)*(W-padL-padR);};
+    var y=function(p){return padT+ph-p/max*ph;};
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Distribution of DSCR across 200,000 Monte Carlo draws at 10 acres. The mass is centred near 0.67 times; only 7.2 percent of draws reach the 1.25 test."});
+    [0,2,4,6,8,10].forEach(function(p){
+      s.appendChild(el("line",{x1:padL,x2:W-padR,y1:y(p),y2:y(p),class:p===0?"axis":"grid"}));
+      var t=el("text",{x:padL-8,y:y(p)+4,"text-anchor":"end"}); t.textContent=p+"%"; s.appendChild(t);
+    });
+    pc.forEach(function(p,i){
+      var v0=lo+i*step, bw=(x(v0+step)-x(v0))-1.5;
+      if(p<=0) return;
+      s.appendChild(el("rect",{x:x(v0),y:y(p),width:Math.max(bw,1),height:y(0)-y(p),
+        fill:(v0+step/2)>=1.25?"var(--good)":"var(--invent)","fill-opacity":.85}));
+    });
+    [0,0.5,1.0,1.5,2.0].forEach(function(v){
+      var t=el("text",{x:x(v),y:H-padB+18,"text-anchor":"middle"});
+      t.textContent=v.toFixed(1)+"×"; s.appendChild(t);
+    });
+    s.appendChild(el("line",{x1:x(1.25),x2:x(1.25),y1:padT-12,y2:y(0),
+      stroke:"var(--good)","stroke-width":2}));
+    var lt=el("text",{x:x(1.25)+7,y:padT-3,"font-size":"10"});
+    lt.setAttribute("fill","var(--good)"); lt.textContent="1.25× test — 7.2% of draws"; s.appendChild(lt);
+    var md=el("text",{x:x(0.67),y:padT-3,"text-anchor":"middle","font-size":"10"});
+    md.textContent="median 0.67×"; s.appendChild(md);
+    s.appendChild(el("line",{x1:x(0.67),x2:x(0.67),y1:padT+2,y2:y(0),
+      stroke:"var(--ink-2)","stroke-width":1.2,"stroke-dasharray":"3 3"}));
+    var ax=el("text",{x:(padL+W-padR)/2,y:H-4,"text-anchor":"middle","font-size":"9.5"});
+    ax.setAttribute("letter-spacing",".1em"); ax.textContent="DSCR AT 65% LTC"; s.appendChild(ax);
+    put("cH",s);
+  })();
+
+  /* ---- probability vs acreage ---- */
+  (function(){
+    var d=[[5,0.0],[8,0.9],[10,7.2],[12,18.4],[14,31.0],[16,41.1],[20,59.5],[25,74.6],[30,82.4],[40,90.4]];
+    var W=840,padL=48,padR=26,padT=20,padB=40, H=230, ph=H-padT-padB;
+    var x=function(a){return padL+(a-5)/35*(W-padL-padR);};
+    var y=function(p){return padT+ph-p/100*ph;};
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Probability of clearing the 1.25 times DSCR test against gross acres, rising from near zero at 5 acres to 90 percent at 40 acres and crossing 50 percent near 18 acres."});
+    [0,25,50,75,100].forEach(function(p){
+      s.appendChild(el("line",{x1:padL,x2:W-padR,y1:y(p),y2:y(p),class:p===0?"axis":"grid"}));
+      var t=el("text",{x:padL-8,y:y(p)+4,"text-anchor":"end"}); t.textContent=p+"%"; s.appendChild(t);
+    });
+    s.appendChild(el("line",{x1:padL,x2:W-padR,y1:y(50),y2:y(50),
+      stroke:"var(--ink-2)","stroke-width":1.4,"stroke-dasharray":"4 3"}));
+    var dd=""; d.forEach(function(o,i){dd+=(i?"L":"M")+x(o[0]).toFixed(1)+" "+y(o[1]).toFixed(1)+" ";});
+    s.appendChild(el("path",{d:dd,fill:"none",stroke:"var(--keep)","stroke-width":2.2,
+      "stroke-linejoin":"round","stroke-linecap":"round"}));
+    d.forEach(function(o){
+      s.appendChild(el("circle",{cx:x(o[0]),cy:y(o[1]),r:4,fill:"var(--keep)",
+        stroke:"var(--surface)","stroke-width":1.8}));
+    });
+    [[10,7.2],[14,31.0],[20,59.5],[30,82.4]].forEach(function(o){
+      var t=el("text",{x:x(o[0]),y:y(o[1])-11,"text-anchor":"middle",class:"val"});
+      t.textContent=o[1].toFixed(0)+"%"; s.appendChild(t);
+    });
+    /* 50% crossing */
+    s.appendChild(el("line",{x1:x(18),x2:x(18),y1:y(50),y2:y(0),
+      stroke:"var(--good)","stroke-width":1.6,"stroke-dasharray":"3 3"}));
+    var ct=el("text",{x:x(18)+6,y:y(50)-8,"font-size":"10"});
+    ct.setAttribute("fill","var(--good)"); ct.textContent="50% near 18 ac"; s.appendChild(ct);
+    [5,10,14,20,25,30,40].forEach(function(a){
+      var t=el("text",{x:x(a),y:H-padB+18,"text-anchor":"middle"}); t.textContent=a; s.appendChild(t);
+    });
+    var ax=el("text",{x:(padL+W-padR)/2,y:H-4,"text-anchor":"middle","font-size":"9.5"});
+    ax.setAttribute("letter-spacing",".1em"); ax.textContent="GROSS ACRES"; s.appendChild(ax);
+    put("cP",s);
+  })();
+
+  /* ---- required rate inversion ---- */
+  (function(){
+    var d=[[5,602],[8,441],[10,387],[12,351],[14,325],[16,306],[20,279],[25,258],[30,244],[40,226]];
+    var W=840,padL=54,padR=26,padT=20,padB=40, H=240, ph=H-padT-padB;
+    var x=function(a){return padL+(a-5)/35*(W-padL-padR);};
+    var y=function(v){return padT+ph-(v-200)/450*ph;};
+    var s=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Required blended revenue per stall-month falls from 602 dollars at 5 acres to 226 at 40 acres, crossing the 309 dollar base case near 16 acres."});
+    [200,300,400,500,600].forEach(function(v){
+      s.appendChild(el("line",{x1:padL,x2:W-padR,y1:y(v),y2:y(v),class:"grid"}));
+      var t=el("text",{x:padL-8,y:y(v)+4,"text-anchor":"end"}); t.textContent="$"+v; s.appendChild(t);
+    });
+    s.appendChild(el("line",{x1:padL,x2:W-padR,y1:y(309),y2:y(309),
+      stroke:"var(--ink-2)","stroke-width":1.8,"stroke-dasharray":"4 3"}));
+    var bt=el("text",{x:W-padR,y:y(309)-7,"text-anchor":"end","font-size":"10"});
+    bt.textContent="$309 base case — unevidenced"; s.appendChild(bt);
+    var dd=""; d.forEach(function(o,i){dd+=(i?"L":"M")+x(o[0]).toFixed(1)+" "+y(o[1]).toFixed(1)+" ";});
+    s.appendChild(el("path",{d:dd,fill:"none",stroke:"var(--keep)","stroke-width":2.2,
+      "stroke-linejoin":"round","stroke-linecap":"round"}));
+    d.forEach(function(o){
+      s.appendChild(el("circle",{cx:x(o[0]),cy:y(o[1]),r:4,fill:"var(--keep)",
+        stroke:"var(--surface)","stroke-width":1.8}));
+    });
+    [[5,602],[10,387],[16,306],[30,244]].forEach(function(o){
+      var t=el("text",{x:x(o[0]),y:y(o[1])-11,"text-anchor":"middle",class:"val"});
+      t.textContent="$"+o[1]; s.appendChild(t);
+    });
+    s.appendChild(el("circle",{cx:x(16),cy:y(306),r:7,fill:"none",
+      stroke:"var(--good)","stroke-width":2}));
+    [5,10,14,16,20,25,30,40].forEach(function(a){
+      var t=el("text",{x:x(a),y:H-padB+18,"text-anchor":"middle"}); t.textContent=a; s.appendChild(t);
+    });
+    var ax=el("text",{x:(padL+W-padR)/2,y:H-4,"text-anchor":"middle","font-size":"9.5"});
+    ax.setAttribute("letter-spacing",".1em"); ax.textContent="GROSS ACRES"; s.appendChild(ax);
+    put("cR",s);
+  })();
+})();
+</script>
