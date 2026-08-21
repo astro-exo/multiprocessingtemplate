@@ -1,0 +1,815 @@
+<title>Bloomfield Truck Parking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F1F2EE; --surface:#FFFFFF; --surface-2:#FAFBF8;
+  --ink:#14181B; --ink-2:#3C4347; --muted:#5B625F;
+  --rule:#D8DBD2; --rule-strong:#B4B9B0;
+  --accent:#1D4E6B; --accent-soft:#E4EDF2;
+  --s-fixed:#1f6fb2; --s-var:#d1601f;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --tint-good:rgba(12,163,12,.13); --tint-warn:rgba(250,178,25,.20); --tint-crit:rgba(208,59,59,.13);
+  --shadow:0 1px 2px rgba(20,24,27,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#131619; --surface:#1A1E21; --surface-2:#171B1E;
+    --ink:#E9EBE7; --ink-2:#C3C9C5; --muted:#98A19D;
+    --rule:#2C3237; --rule-strong:#414950;
+    --accent:#7FB8D8; --accent-soft:#16303D;
+    --s-fixed:#3f8ecf; --s-var:#dd7433;
+    --tint-good:rgba(12,163,12,.20); --tint-warn:rgba(250,178,25,.17); --tint-crit:rgba(208,59,59,.20);
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#131619; --surface:#1A1E21; --surface-2:#171B1E;
+  --ink:#E9EBE7; --ink-2:#C3C9C5; --muted:#98A19D;
+  --rule:#2C3237; --rule-strong:#414950;
+  --accent:#7FB8D8; --accent-soft:#16303D;
+  --s-fixed:#3f8ecf; --s-var:#dd7433;
+  --tint-good:rgba(12,163,12,.20); --tint-warn:rgba(250,178,25,.17); --tint-crit:rgba(208,59,59,.20);
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 28px 96px}
+
+/* ---------- title block ---------- */
+.plate-head{
+  border:1px solid var(--rule-strong); background:var(--surface);
+  margin:32px 0 44px; box-shadow:var(--shadow);
+}
+.plate-head .band{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:14px;
+  padding:22px 26px 18px; border-bottom:1px solid var(--rule);
+}
+.plate-head h1{
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
+  font-weight:700; font-size:clamp(28px,4.4vw,44px); line-height:1.04;
+  letter-spacing:-.021em; margin:0; text-wrap:balance;
+}
+.plate-head .sub{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+}
+.titleblock{display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.tb{padding:13px 26px; border-right:1px solid var(--rule)}
+.tb:last-child{border-right:none}
+.tb dt{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted); margin:0 0 3px;
+}
+.tb dd{
+  margin:0; font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:14px; font-weight:500; font-variant-numeric:tabular-nums; color:var(--ink);
+}
+
+/* ---------- verdict ---------- */
+.verdict{
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(210px,268px); gap:8px 40px;
+  border:1px solid var(--rule-strong); border-left:5px solid var(--crit);
+  background:var(--surface); padding:24px 26px; margin:0 0 52px; box-shadow:var(--shadow);
+}
+.vstats{display:flex; flex-direction:column; gap:14px; border-left:1px solid var(--rule); padding-left:24px}
+.st dt{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:3px;
+}
+.st dd{margin:0}
+.st dd.bad{
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif; font-weight:700; font-size:26px;
+  line-height:1.1; letter-spacing:-.02em; color:var(--crit); font-variant-numeric:tabular-nums;
+}
+.st dd.cap{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; color:var(--muted); margin-top:2px;
+}
+@media (max-width:820px){
+  .verdict{grid-template-columns:1fr}
+  .vstats{border-left:none; border-top:1px solid var(--rule); padding-left:0; padding-top:18px;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:16px}
+}
+.verdict .kicker{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--crit); font-weight:600; margin-bottom:9px;
+}
+.verdict p{margin:0 0 12px; max-width:66ch}
+.verdict p:last-child{margin-bottom:0}
+.verdict strong{font-weight:600}
+
+/* ---------- sections with sheet gutter ---------- */
+section{
+  display:grid; grid-template-columns:64px minmax(0,1fr); gap:0 26px;
+  padding-top:38px; margin-top:38px; border-top:1px solid var(--rule);
+}
+section > .sheet{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:13px; font-weight:600;
+  letter-spacing:.04em; color:var(--accent); padding-top:6px;
+}
+section > .body{min-width:0}
+h2{
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif; font-weight:600;
+  font-size:clamp(21px,2.5vw,27px); letter-spacing:-.014em; line-height:1.18;
+  margin:0 0 6px; text-wrap:balance;
+}
+h3{
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif; font-weight:600; font-size:14px;
+  letter-spacing:.055em; text-transform:uppercase; color:var(--muted);
+  margin:34px 0 12px;
+}
+.lede{color:var(--ink-2); max-width:66ch; margin:0 0 22px}
+p{max-width:66ch; margin:0 0 16px}
+a{color:var(--accent)}
+em{color:var(--ink-2)}
+
+/* ---------- data plates ---------- */
+.plate{
+  border:1px solid var(--rule); background:var(--surface);
+  margin:22px 0 26px; box-shadow:var(--shadow);
+}
+.plate > figcaption{
+  display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px;
+  padding:11px 16px; border-bottom:1px solid var(--rule); background:var(--surface-2);
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+}
+.plate > figcaption b{color:var(--ink); font-weight:600}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:13px; font-variant-numeric:tabular-nums}
+th,td{padding:7px 14px; text-align:right; white-space:nowrap; border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left; white-space:normal; min-width:200px}
+thead th{
+  font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+  font-weight:600; vertical-align:bottom; border-bottom:1px solid var(--rule-strong);
+}
+tbody tr:last-child td{border-bottom:none}
+tr.sub td{color:var(--muted)}
+tr.sub td:first-child{padding-left:30px}
+tr.tot td{font-weight:600; border-top:1px solid var(--rule-strong); background:var(--surface-2)}
+tr.key td{font-weight:600; background:var(--accent-soft)}
+tr.group td{
+  font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  padding-top:15px; font-weight:600; background:none; border-bottom:1px solid var(--rule);
+}
+.neg{color:var(--crit)}
+.pos{color:var(--good)}
+p.note{margin:0; padding:11px 16px; text-align:left; max-width:none;
+  font-family:"Source Serif 4",Georgia,serif; font-size:13.5px; line-height:1.5;
+  color:var(--muted); border-top:1px solid var(--rule); background:var(--surface-2)}
+
+/* ---------- charts ---------- */
+.chart-body{padding:20px 16px 8px}
+.legend{display:flex; flex-wrap:wrap; gap:18px; padding:0 16px 16px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; color:var(--ink-2)}
+.legend span{display:inline-flex; align-items:center; gap:7px}
+.sw{width:11px; height:11px; border-radius:2px; display:inline-block}
+.sw.line{width:16px; height:0; border-top:2px dashed var(--ink-2); border-radius:0}
+.tip{
+  position:fixed; pointer-events:none; opacity:0; transition:opacity .1s;
+  background:var(--ink); color:var(--paper); padding:8px 11px; border-radius:4px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; line-height:1.5;
+  z-index:50; max-width:250px; box-shadow:0 3px 12px rgba(0,0,0,.28);
+}
+.tip b{color:var(--paper)}
+svg{display:block; width:100%; height:auto; overflow:visible}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace; fill:var(--muted); font-size:11px}
+svg .val{fill:var(--ink); font-weight:600; font-size:11.5px}
+svg .axis{stroke:var(--rule); stroke-width:1}
+svg .grid{stroke:var(--rule); stroke-width:1; stroke-dasharray:2 4}
+svg .hit{fill:transparent; cursor:crosshair}
+
+/* ---------- heat grid ---------- */
+.heat td{text-align:center; min-width:66px; border:1px solid var(--surface); font-weight:500}
+.heat td:first-child{text-align:right; font-weight:600; min-width:auto; background:var(--surface-2); border-color:var(--rule)}
+.heat th:first-child{text-align:right}
+.g{background:var(--tint-good)} .w{background:var(--tint-warn)} .c{background:var(--tint-crit)}
+.bands{display:flex; flex-wrap:wrap; gap:16px; padding:12px 16px 0;
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; color:var(--ink-2)}
+.bands span{display:inline-flex; align-items:center; gap:7px}
+.bands i{width:13px; height:13px; border:1px solid var(--rule); display:inline-block; font-style:normal}
+
+/* ---------- callout ---------- */
+.callout{
+  border:1px solid var(--rule-strong); background:var(--surface); padding:20px 22px;
+  margin:26px 0; box-shadow:var(--shadow);
+}
+.callout .k{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:8px;
+}
+.callout .big{
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif; font-weight:700;
+  font-size:clamp(22px,3.4vw,34px); line-height:1.15; letter-spacing:-.018em;
+  margin:0 0 10px; max-width:26ch; text-wrap:balance;
+}
+.callout p{margin:0; color:var(--ink-2); font-size:16px}
+
+ol.risks{max-width:66ch; padding-left:0; list-style:none; counter-reset:rk; margin:18px 0 0}
+ol.risks li{counter-increment:rk; position:relative; padding-left:38px; margin-bottom:18px}
+ol.risks li::before{
+  content:counter(rk,decimal-leading-zero); position:absolute; left:0; top:2px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; font-weight:600; color:var(--accent);
+}
+ol.risks b{font-weight:600}
+
+footer{
+  margin-top:56px; padding-top:26px; border-top:1px solid var(--rule);
+  font-size:14px; color:var(--muted); max-width:78ch;
+}
+footer h3{margin-top:0}
+footer ul{padding-left:18px; margin:0 0 16px}
+footer li{margin-bottom:7px}
+
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+@media (max-width:720px){
+  body{font-size:16px}
+  section{grid-template-columns:1fr; gap:0}
+  section > .sheet{padding:0 0 8px}
+  .tb{border-right:none; border-bottom:1px solid var(--rule)}
+}
+</style>
+
+<div class="wrap">
+
+<header class="plate-head">
+  <div class="band">
+    <h1>Bloomfield Truck Parking</h1>
+    <span class="sub">Development feasibility &middot; capex to coverage</span>
+  </div>
+  <dl class="titleblock">
+    <div class="tb"><dt>Location</dt><dd>Bloomfield, CT</dd></div>
+    <div class="tb"><dt>Asset</dt><dd>IOS / truck parking</dd></div>
+    <div class="tb"><dt>Scenarios</dt><dd>3</dd></div>
+    <div class="tb"><dt>Test</dt><dd>1.25&times; DSCR</dd></div>
+    <div class="tb"><dt>Leverage</dt><dd>65% LTC</dd></div>
+    <div class="tb"><dt>Basis</dt><dd>Aug 2026</dd></div>
+  </dl>
+</header>
+
+<div class="verdict">
+  <div class="vtext">
+  <div class="kicker">Finding</div>
+  <p><strong>None of the three scenarios clears a 1.25&times; debt service coverage ratio.</strong>
+  The best of them covers 0.77&times;. That is not a marginal miss, and it is not an artifact of one
+  pessimistic input &mdash; it survives every reasonable flex of the individual assumptions.</p>
+  <p>The reason is a single ratio. At 65% loan-to-cost and an 8.67% mortgage constant, a 1.25&times;
+  DSCR requires a <strong>7.05% yield on cost</strong> &mdash; which means all-in cost per stall can be no
+  more than about <strong>14.2&times; NOI per stall</strong>. The three scenarios come in at 37.3&times;, 22.9&times;
+  and 24.3&times;.</p>
+  <p>What does work is <strong>scale and density</strong>, not price. A 14-acre program at 26 stalls per
+  gross acre clears the test; a 10-acre program at 21.6 stalls per acre does not, at any land price
+  &mdash; including free land.</p>
+  </div>
+  <div class="vstats" aria-label="Best of the three scenarios, at a glance">
+    <div class="st"><dt>Best-case DSCR</dt><dd class="bad">0.77&times;</dd><dd class="cap">test is 1.25&times;</dd></div>
+    <div class="st"><dt>Best-case yield on cost</dt><dd class="bad">4.36%</dd><dd class="cap">needs 7.05%</dd></div>
+    <div class="st"><dt>Best-case cost per stall</dt><dd class="bad">$34,882</dd><dd class="cap">ceiling $21,599</dd></div>
+    <div class="st"><dt>Rate gap to financeable</dt><dd class="bad">+26.7%</dd><dd class="cap">$309 &rarr; $392 / stall / mo</dd></div>
+  </div>
+</div>
+
+<section>
+  <div class="sheet">01</div>
+  <div class="body">
+    <h2>The three programs</h2>
+    <p class="lede">Bloomfield sits off the interstate &mdash; roughly ten minutes to I-91 via Routes
+    218 and 291 &mdash; so this is a home-base and drop-lot market rather than a highway truck stop.
+    Revenue is modeled as 80&ndash;85% monthly reserved contracts with the balance sold nightly.</p>
+
+    <figure class="plate">
+      <figcaption><b>Program</b><span>Stall count is derived, not asserted</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>&nbsp;</th>
+          <th>S1 &middot; Full asphalt<br>staffed</th>
+          <th>S2 &middot; Value&#8209;engineered<br>unmanned</th>
+          <th>S3 &middot; Retrofit<br>existing yard</th></tr></thead>
+        <tbody>
+          <tr><td>Gross site area</td><td>10.00 ac</td><td>10.00 ac</td><td>8.00 ac</td></tr>
+          <tr><td>Net yard efficiency</td><td>72%</td><td>72%</td><td>78%</td></tr>
+          <tr><td>Paved area per stall</td><td>1,450 SF</td><td>1,450 SF</td><td>1,450 SF</td></tr>
+          <tr class="key"><td>Truck stalls</td><td>216</td><td>216</td><td>187</td></tr>
+          <tr class="sub"><td>stalls per gross acre</td><td>21.6</td><td>21.6</td><td>23.4</td></tr>
+          <tr><td>Land basis</td><td>$175,000/ac</td><td>$175,000/ac</td><td>$385,000/ac</td></tr>
+          <tr><td>Surface specification</td><td>5&Prime; bituminous<br>over 12&Prime; base</td>
+              <td>Paved aisles +<br>millings stalls</td><td>Mill &amp; 2&Prime; overlay<br>+ patching</td></tr>
+          <tr><td>Monthly reserved rate</td><td>$340</td><td>$315</td><td>$325</td></tr>
+          <tr><td>Stabilized occupancy</td><td>90%</td><td>88%</td><td>90%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Stalls = gross acres &times; 43,560 &times; net yard efficiency &divide; 1,450 SF per stall.
+      The 1,450 SF figure is a 12&prime; &times; 75&prime; stall (900 SF) plus half of a 75&prime; back-in aisle
+      (450 SF) plus 100 SF of cross-lanes. The resulting 21.6&ndash;23.4 stalls per gross acre sits inside
+      the 20&ndash;25 industry band.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="sheet">02</div>
+  <div class="body">
+    <h2>Capex, split fixed from variable</h2>
+    <p class="lede">The split matters more than the total. <em>Variable</em> costs scale one-for-one
+    with the size of the paved yard, so they set the marginal cost of a stall. <em>Fixed</em> costs are
+    incurred to open the gate at all, and are spread across however many stalls the site yields.</p>
+
+    <h3>Variable &mdash; yard construction, per SF of paved yard</h3>
+    <figure class="plate">
+      <figcaption><b>Variable capex</b><span>Hard cost, before soft loadings</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>&nbsp;</th><th>S1</th><th>S2</th><th>S3</th></tr></thead>
+        <tbody>
+          <tr><td>Clearing, grubbing, erosion control</td><td>$0.35</td><td>$0.35</td><td>$0.05</td></tr>
+          <tr><td>Mass grading &amp; earthwork</td><td>$1.75</td><td>$1.55</td><td>$0.20</td></tr>
+          <tr><td>Subgrade, geotextile, 12&Prime; aggregate base</td><td>$2.40</td><td>$2.05</td><td>$0.15</td></tr>
+          <tr><td>Surface course</td><td>$4.35</td><td>$1.95</td><td>$1.85</td></tr>
+          <tr><td>Storm conveyance within yard</td><td>$0.48</td><td>$0.44</td><td>$0.12</td></tr>
+          <tr><td>Striping, wheel stops, bollards</td><td>$0.12</td><td>$0.10</td><td>$0.12</td></tr>
+          <tr class="tot"><td>Subtotal per SF</td><td>$9.45</td><td>$6.44</td><td>$2.49</td></tr>
+          <tr class="sub"><td>&times; 1,450 SF per stall</td><td>$13,703</td><td>$9,338</td><td>$3,611</td></tr>
+          <tr class="group"><td colspan="4">Per-stall discrete items</td></tr>
+          <tr><td>Yard lighting &mdash; LED on 30&prime; poles</td><td>$1,225</td><td>$1,225</td><td>$1,225</td></tr>
+          <tr><td>Yard electrical distribution, panels</td><td>$375</td><td>$340</td><td>$300</td></tr>
+          <tr><td>Reefer / APU power pedestals</td><td>$620</td><td>&ndash;</td><td>$310</td></tr>
+          <tr><td>Incremental camera coverage</td><td>$185</td><td>$210</td><td>$210</td></tr>
+          <tr class="tot"><td>Subtotal per stall</td><td>$2,405</td><td>$1,775</td><td>$2,045</td></tr>
+          <tr class="key"><td>Variable hard cost per stall</td><td>$16,108</td><td>$11,113</td><td>$5,656</td></tr>
+          <tr class="sub"><td>total variable hard cost</td><td>$3,479,220</td><td>$2,400,408</td><td>$1,057,578</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Connecticut construction runs roughly 1.32&times; the national average, and a heavy-duty
+      truck section is $7&ndash;12/SF against $4&ndash;10/SF for ordinary commercial paving. The surface course
+      is the single largest value-engineering lever in the whole model: dropping from full-depth
+      bituminous to paved aisles with compacted millings stalls removes $4,995 per stall.</p>
+    </figure>
+
+    <h3>Fixed &mdash; site-level threshold costs</h3>
+    <figure class="plate">
+      <figcaption><b>Fixed capex</b><span>Independent of stall count</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>&nbsp;</th><th>S1</th><th>S2</th><th>S3</th></tr></thead>
+        <tbody>
+          <tr><td>Land &amp; acquisition costs</td><td>$1,788,500</td><td>$1,788,500</td><td>$3,147,760</td></tr>
+          <tr><td>Pre-development, design, entitlement</td><td>$471,000</td><td>$445,000</td><td>$331,500</td></tr>
+          <tr><td>Site infrastructure (hard)</td><td>$1,738,120</td><td>$1,517,280</td><td>$1,142,772</td></tr>
+          <tr class="group"><td colspan="4">Site infrastructure detail &mdash; S2 column shown</td></tr>
+          <tr class="sub"><td>Stormwater basin, water-quality units, outlet</td><td></td><td>$355,000</td><td></td></tr>
+          <tr class="sub"><td>Utility service &mdash; electric, water, sewer, fiber</td><td></td><td>$185,000</td><td></td></tr>
+          <tr class="sub"><td>Site entry, apron, turn lane, sight lines</td><td></td><td>$175,000</td><td></td></tr>
+          <tr class="sub"><td>Security head-end &mdash; NVR, analytics, network</td><td></td><td>$175,000</td><td></td></tr>
+          <tr class="sub"><td>Gatehouse / driver services + restrooms</td><td></td><td>$145,000</td><td></td></tr>
+          <tr class="sub"><td>Automated gates, LPR / RFID access control</td><td></td><td>$145,000</td><td></td></tr>
+          <tr class="sub"><td>Perimeter fence &mdash; 2,640 LF at $52</td><td></td><td>$137,280</td><td></td></tr>
+          <tr class="sub"><td>Landscaping, buffer, signage, ADA parking</td><td></td><td>$105,000</td><td></td></tr>
+          <tr class="sub"><td>Demolition &amp; clearing outside the yard</td><td></td><td>$95,000</td><td></td></tr>
+          <tr class="group"><td colspan="4">Project-level</td></tr>
+          <tr><td>Soft-cost loadings</td><td>$313,040</td><td>$195,884</td><td>$110,018</td></tr>
+          <tr><td>Contingency</td><td>$663,646</td><td>$493,629</td><td>$346,555</td></tr>
+          <tr><td>Financing &amp; construction carry</td><td>$478,771</td><td>$372,485</td><td>$310,493</td></tr>
+          <tr><td>Lease-up reserve</td><td>$416,823</td><td>$321,306</td><td>$296,746</td></tr>
+          <tr class="tot"><td>Total project cost</td><td>$9,349,120</td><td>$7,534,492</td><td>$6,743,422</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Soft loadings are construction management (3.0%), testing and inspection (0.9%),
+      builder&rsquo;s risk (1.1%) and, for S1 only, bonds (1.0%). Contingency is 12% of hard plus soft, and
+      15% for the retrofit. Both are allocated pro-rata between fixed and variable by share of hard cost.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="sheet">03</div>
+  <div class="body">
+    <h2>Cost per stall</h2>
+    <p class="lede">Fixed costs are 56&ndash;81% of capital cost in every scenario. That is the structural
+    fact of this asset class, and it is why density and site size &mdash; not construction specification
+    &mdash; are the strongest levers available.</p>
+
+    <figure class="plate">
+      <figcaption><b>All-in cost per stall</b><span>Against the 1.25&times; DSCR ceiling</span></figcaption>
+      <div class="chart-body"><div id="c1"></div></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--s-fixed)"></i>Fixed capex per stall</span>
+        <span><i class="sw" style="background:var(--s-var)"></i>Variable capex per stall</span>
+        <span><i class="sw line"></i>Maximum supportable at 1.25&times; DSCR</span>
+      </div>
+      <p class="note">The dashed marker is the highest cost per stall each scenario&rsquo;s own NOI can carry at
+      65% LTC and a 1.25&times; coverage test. Every bar overshoots its own ceiling by roughly 1.6&ndash;2.6&times;.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Cost per stall</b><span>Composition</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>&nbsp;</th><th>S1</th><th>S2</th><th>S3</th></tr></thead>
+        <tbody>
+          <tr><td>Fixed cost per stall</td><td>$24,160</td><td>$21,813</td><td>$29,232</td></tr>
+          <tr><td>Variable cost per stall</td><td>$19,123</td><td>$13,069</td><td>$6,829</td></tr>
+          <tr class="key"><td>All-in cost per stall</td><td>$43,283</td><td>$34,882</td><td>$36,061</td></tr>
+          <tr class="sub"><td>of which land</td><td>$8,280</td><td>$8,280</td><td>$16,833</td></tr>
+          <tr class="sub"><td>fixed share of capital cost</td><td>55.8%</td><td>62.5%</td><td>81.1%</td></tr>
+          <tr><td>Cost per gross acre</td><td>$934,912</td><td>$753,449</td><td>$842,928</td></tr>
+          <tr class="tot"><td>Maximum supportable at 1.25&times;</td><td>$16,448</td><td>$21,599</td><td>$21,100</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Variable cost per stall exceeds the fixed component only in S1, where full-depth asphalt
+      carries $13,703 of pavement alone.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="sheet">04</div>
+  <div class="body">
+    <h2>Operations and NOI</h2>
+    <p class="lede">Revenue is thin relative to cost, and Connecticut&rsquo;s operating burden is heavy.
+    Property taxes alone run $37&ndash;44 per stall per month at a 34.40 mill rate on the statutory 70%
+    assessment ratio.</p>
+
+    <figure class="plate">
+      <figcaption><b>Stabilized operations</b><span>Year-1 stabilized dollars</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>&nbsp;</th><th>S1</th><th>S2</th><th>S3</th></tr></thead>
+        <tbody>
+          <tr><td>Effective gross income</td><td>$914,019</td><td>$801,405</td><td>$721,563</td></tr>
+          <tr class="sub"><td>blended revenue per stall / month</td><td>$353</td><td>$309</td><td>$322</td></tr>
+          <tr class="sub"><td>revenue per gross acre</td><td>$91,402</td><td>$80,140</td><td>$90,195</td></tr>
+          <tr class="group"><td colspan="4">Operating expenses</td></tr>
+          <tr><td>Real estate taxes</td><td>$114,362</td><td>$96,886</td><td>$106,549</td></tr>
+          <tr><td>On-site staffing</td><td>$165,000</td><td>&ndash;</td><td>&ndash;</td></tr>
+          <tr><td>Snow &amp; ice management</td><td>$63,273</td><td>$58,959</td><td>$54,778</td></tr>
+          <tr><td>Remote monitoring &amp; patrol</td><td>$42,000</td><td>$52,000</td><td>$50,000</td></tr>
+          <tr><td>Repairs, maintenance, sweeping</td><td>$45,360</td><td>$50,760</td><td>$42,075</td></tr>
+          <tr><td>Insurance</td><td>$49,680</td><td>$45,360</td><td>$41,140</td></tr>
+          <tr><td>Replacement reserve</td><td>$35,640</td><td>$42,120</td><td>$34,595</td></tr>
+          <tr><td>All other &mdash; utilities, trash, marketing, fees</td><td>$94,360</td><td>$82,800</td><td>$75,035</td></tr>
+          <tr><td>Management fee &amp; payment processing</td><td>$53,971</td><td>$43,727</td><td>$39,320</td></tr>
+          <tr class="tot"><td>Total operating expenses</td><td>$663,646</td><td>$472,611</td><td>$443,492</td></tr>
+          <tr class="sub"><td>opex ratio</td><td>72.6%</td><td>59.0%</td><td>61.5%</td></tr>
+          <tr class="sub"><td>opex per stall / month</td><td>$256</td><td>$182</td><td>$198</td></tr>
+          <tr class="key"><td>Net operating income</td><td>$250,373</td><td>$328,793</td><td>$278,071</td></tr>
+          <tr class="sub"><td>NOI per stall</td><td>$1,159</td><td>$1,522</td><td>$1,487</td></tr>
+          <tr class="sub"><td>yield on cost</td><td>2.68%</td><td>4.36%</td><td>4.12%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Components are rounded and may not foot exactly. S1&rsquo;s 72.6% opex ratio is driven by the staffed gate. Unmanned, technology-gated
+      operation is the only configuration that keeps the ratio near 60% at this revenue level.</p>
+    </figure>
+
+    <div class="callout">
+      <div class="k">The constraint, stated plainly</div>
+      <p class="big">$309 of revenue per stall per month against $182 of operating cost leaves $127 to
+      carry $34,882 of capital.</p>
+      <p>That is a 22.9&times; cost-to-NOI ratio on the best of the three scenarios. Debt at 65% LTC needs
+      it under 14.2&times;.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sheet">05</div>
+  <div class="body">
+    <h2>Coverage</h2>
+    <p class="lede">Sized against a 25-year amortization at 7.25%, the annual mortgage constant is
+    8.674%. Debt is constrained by value long before it is constrained by cost &mdash; all three
+    scenarios are worth materially less than they cost to build.</p>
+
+    <figure class="plate">
+      <figcaption><b>Debt &amp; coverage</b><span>At 65% loan-to-cost</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>&nbsp;</th><th>S1</th><th>S2</th><th>S3</th></tr></thead>
+        <tbody>
+          <tr><td>Loan at 65% LTC</td><td>$6,076,928</td><td>$4,897,420</td><td>$4,383,224</td></tr>
+          <tr><td>Annual debt service</td><td>$527,093</td><td>$424,787</td><td>$380,187</td></tr>
+          <tr class="key"><td>DSCR at target leverage</td><td class="neg">0.48&times;</td><td class="neg">0.77&times;</td><td class="neg">0.73&times;</td></tr>
+          <tr><td>Debt yield</td><td>4.1%</td><td>6.7%</td><td>6.3%</td></tr>
+          <tr><td>Stabilized value at exit cap</td><td>$3,338,311</td><td>$4,242,493</td><td>$3,707,616</td></tr>
+          <tr><td>Development profit / (loss)</td><td class="neg">($6,010,809)</td><td class="neg">($3,291,999)</td><td class="neg">($3,035,806)</td></tr>
+          <tr class="group"><td colspan="4">What each scenario would need</td></tr>
+          <tr><td>Required blended revenue per stall / month</td><td>$520</td><td>$392</td><td>$414</td></tr>
+          <tr class="sub"><td>modeled</td><td>$353</td><td>$309</td><td>$322</td></tr>
+          <tr class="sub"><td>rate gap</td><td class="neg">+47.5%</td><td class="neg">+26.7%</td><td class="neg">+28.9%</td></tr>
+          <tr><td>Maximum supportable cost per stall</td><td>$16,448</td><td>$21,599</td><td>$21,100</td></tr>
+          <tr><td>Maximum supportable land price</td><td class="neg">($392,162)/ac</td><td class="neg">($105,726)/ac</td><td>$42,818/ac</td></tr>
+          <tr><td>Break-even occupancy</td><td class="neg">132.2%</td><td class="neg">112.7%</td><td class="neg">115.0%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">A break-even occupancy above 100% means the stabilized rent roll cannot cover operating
+      cost and debt service even at full occupancy. A negative maximum land price means the
+      improvements alone cost more than the income can carry, so no land basis rescues the deal.</p>
+    </figure>
+
+    <h3>The deal box &mdash; DSCR across rate and land basis</h3>
+    <figure class="plate">
+      <figcaption><b>Grid</b><span>Value-engineered program, 10 acres, 216 stalls</span></figcaption>
+      <div class="scroll"><table class="heat">
+        <thead><tr><th>Rate $/mo</th><th>$0/ac</th><th>$40k/ac</th><th>$80k/ac</th><th>$120k/ac</th><th>$160k/ac</th><th>$200k/ac</th></tr></thead>
+        <tbody>
+          <tr><td>$300</td><td class="w">1.06&times;</td><td class="c">0.96&times;</td><td class="c">0.87&times;</td><td class="c">0.79&times;</td><td class="c">0.72&times;</td><td class="c">0.65&times;</td></tr>
+          <tr><td>$325</td><td class="g">1.26&times;</td><td class="w">1.14&times;</td><td class="w">1.03&times;</td><td class="c">0.94&times;</td><td class="c">0.86&times;</td><td class="c">0.79&times;</td></tr>
+          <tr><td>$350</td><td class="g">1.45&times;</td><td class="g">1.31&times;</td><td class="w">1.20&times;</td><td class="w">1.10&times;</td><td class="w">1.01&times;</td><td class="c">0.93&times;</td></tr>
+          <tr><td>$375</td><td class="g">1.64&times;</td><td class="g">1.49&times;</td><td class="g">1.37&times;</td><td class="g">1.25&times;</td><td class="w">1.16&times;</td><td class="w">1.07&times;</td></tr>
+          <tr><td>$400</td><td class="g">1.83&times;</td><td class="g">1.67&times;</td><td class="g">1.53&times;</td><td class="g">1.41&times;</td><td class="g">1.30&times;</td><td class="w">1.21&times;</td></tr>
+          <tr><td>$425</td><td class="g">2.02&times;</td><td class="g">1.85&times;</td><td class="g">1.70&times;</td><td class="g">1.56&times;</td><td class="g">1.45&times;</td><td class="g">1.34&times;</td></tr>
+          <tr><td>$450</td><td class="g">2.22&times;</td><td class="g">2.03&times;</td><td class="g">1.86&times;</td><td class="g">1.72&times;</td><td class="g">1.59&times;</td><td class="g">1.48&times;</td></tr>
+        </tbody>
+      </table></div>
+      <div class="bands">
+        <span><i class="g"></i>1.25&times; and above &mdash; financeable</span>
+        <span><i class="w"></i>1.00 to 1.24&times; &mdash; covers debt, fails the test</span>
+        <span><i class="c"></i>below 1.00&times; &mdash; does not cover debt service</span>
+      </div>
+      <p class="note">At the modeled $315 per month, no land price clears the test &mdash; not even free land.
+      Rate has to move first; land basis alone cannot rescue a 10-acre program.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="sheet">06</div>
+  <div class="body">
+    <h2>What actually changes the answer</h2>
+    <p class="lede">Because fixed costs dominate, the strongest lever is spreading them across more
+    stalls. Holding rate at $350 per month and land at $120,000 per acre, site size alone moves the
+    deal from 0.48&times; to 1.65&times;.</p>
+
+    <figure class="plate">
+      <figcaption><b>Scale</b><span>Cost per stall and coverage against site size</span></figcaption>
+      <div class="chart-body"><div id="c2"></div></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--s-fixed)"></i>All-in cost per stall</span>
+        <span><i class="sw" style="background:var(--s-var)"></i>DSCR at 65% LTC</span>
+        <span><i class="sw line"></i>1.25&times; test</span>
+      </div>
+      <p class="note">Two measures on two separate scales, plotted as stacked panels sharing the acreage axis.
+      Variable cost per stall is flat at $13,069 across the whole range &mdash; every dollar of movement
+      comes from fixed cost being spread wider.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Density</b><span>10 acres, $350/mo, $120k/ac land</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>SF per stall</th><th>Yard efficiency</th><th>Stalls</th><th>Cost/stall</th><th>NOI/stall</th><th>Cost&nbsp;:&nbsp;NOI</th><th>DSCR</th><th>Yield on cost</th></tr></thead>
+        <tbody>
+          <tr><td>1,650</td><td>66%</td><td>174</td><td>$37,971</td><td>$1,799</td><td>21.1&times;</td><td class="neg">0.84&times;</td><td>4.74%</td></tr>
+          <tr><td>1,450</td><td>72%</td><td>216</td><td>$32,091</td><td>$1,987</td><td>16.2&times;</td><td class="neg">1.10&times;</td><td>6.19%</td></tr>
+          <tr class="key"><td>1,300</td><td>76%</td><td>254</td><td>$28,238</td><td>$2,116</td><td>13.3&times;</td><td class="pos">1.33&times;</td><td>7.49%</td></tr>
+          <tr><td>1,150</td><td>80%</td><td>303</td><td>$24,599</td><td>$2,236</td><td>11.0&times;</td><td class="pos">1.61&times;</td><td>9.09%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Below roughly 1,200 SF per stall the layout needs blind-side backing or shared aisles.
+      Confirm against a real site plan before underwriting the bottom row.</p>
+    </figure>
+
+    <figure class="plate">
+      <figcaption><b>Bracketed cases</b><span>14-acre high-density program</span></figcaption>
+      <div class="scroll"><table>
+        <thead><tr><th>&nbsp;</th><th>Stalls</th><th>Cost/stall</th><th>NOI</th><th>Yield on cost</th><th>DSCR</th><th>Cost&nbsp;:&nbsp;NOI</th></tr></thead>
+        <tbody>
+          <tr><td>Conservative &mdash; $150k/ac, 1,450 SF/stall, $340/mo, 88% occ</td>
+              <td>302</td><td>$30,420</td><td>$602,353</td><td>6.56%</td><td class="neg">1.16&times;</td><td>15.3&times;</td></tr>
+          <tr class="key"><td>Moderate &mdash; $120k/ac, 1,300 SF/stall, $365/mo, 90% occ</td>
+              <td>347</td><td>$25,813</td><td>$844,548</td><td>9.43%</td><td class="pos">1.67&times;</td><td>10.6&times;</td></tr>
+          <tr><td>Aggressive &mdash; $95k/ac, 1,300 SF/stall, $395/mo, 92% occ</td>
+              <td>356</td><td>$24,416</td><td>$1,090,772</td><td>12.55%</td><td class="pos">2.23&times;</td><td>8.0&times;</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">The moderate case is the honest target &mdash; but note that it clears on four
+      simultaneous conditions, none free: a 14-acre site, land at $120k/acre (below the $175k/acre base
+      case), 26 stalls per gross acre, and $365 per month, which is above today&rsquo;s Hartford-metro
+      asking rates.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="sheet">07</div>
+  <div class="body">
+    <h2>Risks and recommendation</h2>
+    <ol class="risks">
+      <li><b>Entitlement is the gating item.</b> Bloomfield&rsquo;s Town Plan &amp; Zoning Commission has
+      treated outdoor storage as a use that is <em>not</em> permitted as a principal use &mdash; approved as
+      an accessory use by special permit, with a Zoning Board of Appeals variance otherwise required. A
+      standalone commercial truck-parking yard likely needs a zoning text amendment or a variance, not
+      just site-plan approval. Budget 12&ndash;18 months and structure the land contract as
+      option-and-entitle, never a hard close.</li>
+      <li><b>Rate risk is the largest number in the model.</b> The $315&ndash;340 per month used here is
+      inferred from the national $150&ndash;500 band for full tractor-trailer configurations, not observed
+      from a Bloomfield comp. Hartford-metro marketplace data shows $81&ndash;106 per month &mdash; but for
+      12&ndash;35 ft spaces, not secured 53 ft stalls. Verify against live asks before committing capital.</li>
+      <li><b>Property tax method.</b> Taxes are modeled on an assessor factor applied to cost basis. A
+      Connecticut assessor may instead use the income approach, which at these NOIs produces a
+      materially lower bill. The sensitivity grid in the workbook spans the full range; this is the
+      largest soft spot in the model.</li>
+      <li><b>Public supply is a price ceiling.</b> CTDOT is spending $31M to add 180-plus spaces by
+      roughly 2030, taking public capacity from about 420 to 600 &mdash; free to drivers. That constrains
+      how far private pricing can run.</li>
+      <li><b>Ledge and unsuitable soils</b> are the largest greenfield cost shock in this part of
+      Connecticut, and are covered only by general contingency. Bore before you buy.</li>
+      <li><b>Environmental exposure.</b> Connecticut&rsquo;s Release-Based Remediation program replaced the
+      Transfer Act. The $95,000 carried on the retrofit scenario is an allowance, not a budget.</li>
+    </ol>
+
+    <div class="callout">
+      <div class="k">Recommendation</div>
+      <p class="big">Do not pursue a 10-acre greenfield build at $175,000 per acre.</p>
+      <p>Two paths merit real work. <b>Scale up</b> &mdash; find 14 or more acres at or below $120,000 per
+      acre with a layout yielding 25-plus stalls per gross acre; that is the only configuration clearing
+      a lender&rsquo;s test on its own economics. Or <b>buy income rather than build it</b> &mdash; an existing
+      paved yard acquired at a basis supporting about $21,000 per stall of all-in cost works where new
+      construction does not, though note the retrofit scenario as modeled fails precisely because
+      $385,000 per acre for improved land is too rich; its residual land value at 1.25&times; is
+      $42,818 per acre.</p>
+      <p style="margin-top:12px">Either way the first two dollars should go to a rate survey of secured
+      53 ft stalls within fifteen miles, and a zoning pre-application meeting with Bloomfield TPZ. Both
+      are cheap, and both can kill the deal before any land is optioned.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <h3>Method &amp; sources</h3>
+  <p style="max-width:78ch">Every figure above is generated by a formula-driven workbook
+  (<code>Bloomfield_Truck_Parking_Model.xlsx</code>, 11 tabs, ~1,200 live formulas) and independently
+  replicated in Python. Change any assumption and the whole chain &mdash; capex, cost per stall, NOI,
+  DSCR &mdash; repoints.</p>
+  <ul>
+    <li><b>Demand &amp; public supply</b> &mdash; CTDOT statewide truck parking study and CT Freight Plan;
+    CTDOT press releases; Hartford Business Journal; Commercial Carrier Journal.</li>
+    <li><b>Construction cost</b> &mdash; Truck Parking Club cost guidance ($100&ndash;200k/acre, 25 trucks/acre);
+    Wins Parking 2026 guide ($4,500&ndash;6,800 per surface space); commercial asphalt benchmarks
+    ($4&ndash;10/SF general, $7&ndash;12/SF heavy-duty); CostFlowAI Connecticut multiplier (1.32&times;).</li>
+    <li><b>Rates &amp; occupancy</b> &mdash; RecNation national rate bands; Neighbor.com Hartford,
+    East Hartford and West Hartford listings; Truck Parking Club and Truckspace stabilization guidance.</li>
+    <li><b>Capital markets</b> &mdash; Matthews 2026 IOS Sector Update (6.00&ndash;7.75% cap rates);
+    Select Commercial and PeerSense (rates); Commercial Lending USA (DSCR floors).</li>
+    <li><b>Local</b> &mdash; Town of Bloomfield mill rate and assessor pages; Bloomfield Town Plan &amp;
+    Zoning Commission minutes; LandSearch and Hartford Business Journal land and sale comps.</li>
+  </ul>
+  <p style="max-width:78ch">Rate and land assumptions are inferences from regional bands, not observed
+  Bloomfield transactions. Treat them as the first thing to verify, not as findings.</p>
+</footer>
+
+</div>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var NS="http://www.w3.org/2000/svg";
+  var tip=document.getElementById("tip");
+  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a){if(a[k]!==null&&a[k]!==undefined)e.setAttribute(k,a[k]);}return e;}
+  function money(v){return "$"+Math.round(v).toLocaleString("en-US");}
+  function show(e,html){tip.innerHTML=html;tip.style.opacity="1";move(e);}
+  function move(e){
+    var w=tip.offsetWidth,h=tip.offsetHeight;
+    var x=e.clientX+14, y=e.clientY-h-12;
+    if(x+w>window.innerWidth-8)x=e.clientX-w-14;
+    if(y<8)y=e.clientY+18;
+    tip.style.left=x+"px";tip.style.top=y+"px";
+  }
+  function hide(){tip.style.opacity="0";}
+  function bind(node,html){
+    node.addEventListener("mouseenter",function(e){show(e,html);});
+    node.addEventListener("mousemove",move);
+    node.addEventListener("mouseleave",hide);
+  }
+
+  /* ---------- Chart 1 : stacked cost per stall ---------- */
+  (function(){
+    var data=[
+      {k:"S1",label:"Full asphalt, staffed",fixed:24160,vari:19123,max:16448},
+      {k:"S2",label:"Value-engineered, unmanned",fixed:21813,vari:13069,max:21599},
+      {k:"S3",label:"Retrofit existing yard",fixed:29232,vari:6829,max:21100}
+    ];
+    var W=820,padL=48,padR=118,padT=26,padB=40,rowH=84;
+    var H=padT+padB+data.length*rowH;
+    var maxV=46000;
+    var x=function(v){return padL+(v/maxV)*(W-padL-padR);};
+    var svg=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"All-in cost per stall by scenario, split into fixed and variable capital cost, against each scenario's maximum supportable cost at a 1.25 times DSCR."});
+    /* gridlines */
+    [0,10000,20000,30000,40000].forEach(function(v){
+      svg.appendChild(el("line",{x1:x(v),x2:x(v),y1:padT-8,y2:H-padB+2,class:v===0?"axis":"grid"}));
+      var t=el("text",{x:x(v),y:H-padB+18,"text-anchor":"middle"});
+      t.textContent=v===0?"$0":"$"+(v/1000)+"k";
+      svg.appendChild(t);
+    });
+    data.forEach(function(d,i){
+      var y=padT+i*rowH, bh=28, by=y+20;
+      var lab=el("text",{x:padL,y:y+9});
+      lab.textContent=d.k+"  "+d.label;
+      lab.setAttribute("fill","var(--ink)");
+      lab.setAttribute("font-size","11.5");
+      svg.appendChild(lab);
+
+      var wF=x(d.fixed)-padL;
+      var rF=el("rect",{x:padL,y:by,width:Math.max(wF,2),height:bh,fill:"var(--s-fixed)",rx:0});
+      svg.appendChild(rF);
+      bind(rF,"<b>"+d.k+" &middot; fixed capex</b><br>"+money(d.fixed)+" per stall<br>"+
+        Math.round(d.fixed/(d.fixed+d.vari)*100)+"% of all-in cost");
+
+      var xV=padL+wF+2, wV=x(d.vari)-padL-2;
+      var rV=el("rect",{x:xV,y:by,width:Math.max(wV,2),height:bh,fill:"var(--s-var)",rx:0});
+      svg.appendChild(rV);
+      bind(rV,"<b>"+d.k+" &middot; variable capex</b><br>"+money(d.vari)+" per stall<br>marginal cost of one more stall");
+
+      var tot=d.fixed+d.vari;
+      var tl=el("text",{x:x(tot)+10,y:by+bh/2+4,class:"val"});
+      tl.textContent=money(tot);
+      svg.appendChild(tl);
+
+      /* max supportable marker */
+      var mx=x(d.max);
+      svg.appendChild(el("line",{x1:mx,x2:mx,y1:by-7,y2:by+bh+7,stroke:"var(--ink-2)","stroke-width":2,"stroke-dasharray":"4 3"}));
+      var ml=el("text",{x:mx,y:by+bh+19,"text-anchor":"middle","font-size":"10"});
+      ml.textContent="ceiling "+money(d.max);
+      svg.appendChild(ml);
+      var hit=el("rect",{x:mx-9,y:by-9,width:18,height:bh+18,class:"hit"});
+      svg.appendChild(hit);
+      bind(hit,"<b>"+d.k+" ceiling</b><br>"+money(d.max)+" per stall<br>most this NOI carries at 1.25&times;<br>overshoot "+(tot/d.max).toFixed(1)+"&times;");
+    });
+    document.getElementById("c1").appendChild(svg);
+  })();
+
+  /* ---------- Chart 2 : scale, two stacked panels sharing x ---------- */
+  (function(){
+    var acres=[4,6,8,10,14,20,30];
+    var cost =[48969,39664,34870,32091,28891,26441,24532];
+    var dscr =[0.48,0.76,0.96,1.10,1.29,1.48,1.65];
+    var W=820,padL=58,padR=26,padT=22,padB=32,pH=132,gapY=46;
+    var H=padT+pH+gapY+pH+padB;
+    var xmin=4,xmax=30;
+    var x=function(a){return padL+(a-xmin)/(xmax-xmin)*(W-padL-padR);};
+    var y1=function(v){return padT+pH-(v-22000)/(50000-22000)*pH;};
+    var top2=padT+pH+gapY;
+    var y2=function(v){return top2+pH-(v-0.4)/(1.8-0.4)*pH;};
+    var svg=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"Two stacked panels sharing a gross-acres axis: all-in cost per stall falling from about 49,000 dollars at 4 acres to 24,500 dollars at 30 acres, and DSCR rising from 0.48 times to 1.65 times, crossing the 1.25 times test between 10 and 14 acres."});
+
+    function panel(title,yf,ticks,fmt,color,vals,yLabel){
+      var t=el("text",{x:padL,y:yf(ticks[ticks.length-1])-12,"font-size":"11"});
+      t.textContent=title; t.setAttribute("fill","var(--ink)"); t.setAttribute("font-weight","600");
+      svg.appendChild(t);
+      ticks.forEach(function(v){
+        svg.appendChild(el("line",{x1:padL,x2:W-padR,y1:yf(v),y2:yf(v),class:"grid"}));
+        var lb=el("text",{x:padL-10,y:yf(v)+4,"text-anchor":"end"});
+        lb.textContent=fmt(v); svg.appendChild(lb);
+      });
+      var d="";
+      vals.forEach(function(v,i){d+=(i?"L":"M")+x(acres[i]).toFixed(1)+" "+yf(v).toFixed(1)+" ";});
+      svg.appendChild(el("path",{d:d,fill:"none",stroke:color,"stroke-width":2,"stroke-linejoin":"round","stroke-linecap":"round"}));
+      vals.forEach(function(v,i){
+        svg.appendChild(el("circle",{cx:x(acres[i]),cy:yf(v),r:4.5,fill:color,stroke:"var(--surface)","stroke-width":2}));
+      });
+      return yLabel;
+    }
+
+    panel("All-in cost per stall",y1,[24000,32000,40000,48000],function(v){return "$"+(v/1000)+"k";},"var(--s-fixed)",cost);
+    panel("DSCR at 65% LTC",y2,[0.5,1.0,1.5],function(v){return v.toFixed(2)+"×";},"var(--s-var)",dscr);
+
+    /* 1.25x reference */
+    svg.appendChild(el("line",{x1:padL,x2:W-padR,y1:y2(1.25),y2:y2(1.25),stroke:"var(--ink-2)","stroke-width":2,"stroke-dasharray":"4 3"}));
+    var rt=el("text",{x:padL+6,y:y2(1.25)-7,"text-anchor":"start","font-size":"10"});
+    rt.textContent="1.25× lender test"; svg.appendChild(rt);
+
+    /* shared x axis */
+    svg.appendChild(el("line",{x1:padL,x2:W-padR,y1:top2+pH,y2:top2+pH,class:"axis"}));
+    acres.forEach(function(a){
+      var lb=el("text",{x:x(a),y:top2+pH+18,"text-anchor":"middle"});
+      lb.textContent=a; svg.appendChild(lb);
+    });
+    var ax=el("text",{x:(padL+W-padR)/2,y:H-4,"text-anchor":"middle","font-size":"10.5"});
+    ax.textContent="GROSS ACRES"; ax.setAttribute("letter-spacing","0.1em"); svg.appendChild(ax);
+
+    /* crosshair hit zones */
+    acres.forEach(function(a,i){
+      var lo=i===0?padL:(x(acres[i-1])+x(a))/2;
+      var hi=i===acres.length-1?W-padR:(x(a)+x(acres[i+1]))/2;
+      var hit=el("rect",{x:lo,y:padT-10,width:Math.max(hi-lo,4),height:H-padB-padT+10,class:"hit"});
+      svg.appendChild(hit);
+      var stalls=Math.floor(a*43560*0.72/1450);
+      bind(hit,"<b>"+a+" gross acres</b><br>"+stalls.toLocaleString()+" stalls<br>cost/stall "+money(cost[i])+
+        "<br>DSCR "+dscr[i].toFixed(2)+"×"+(dscr[i]>=1.25?" &mdash; passes":" &mdash; fails"));
+      hit.addEventListener("mouseenter",function(){
+        cross.setAttribute("x1",x(a));cross.setAttribute("x2",x(a));cross.style.opacity="1";
+      });
+      hit.addEventListener("mouseleave",function(){cross.style.opacity="0";});
+    });
+    var cross=el("line",{x1:padL,x2:padL,y1:padT-10,y2:top2+pH,stroke:"var(--rule-strong)","stroke-width":1,opacity:"0"});
+    cross.style.transition="opacity .1s";
+    svg.appendChild(cross);
+
+    document.getElementById("c2").appendChild(svg);
+  })();
+})();
+</script>
